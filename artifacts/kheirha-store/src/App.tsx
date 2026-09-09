@@ -265,37 +265,28 @@ function Storefront() {
               <ShoppingBag size={23} strokeWidth={2.4} />
             </span>
             <span>
-              <span className="font-display block text-[1.35rem] font-extrabold leading-none text-[#174d45]">خيرها</span>
-              <span className="mt-1 block text-[.66rem] font-bold tracking-[.13em] text-[#997840]">مونة البيت المصرية</span>
+              <span className="font-display block text-[1.4rem] font-extrabold leading-none text-[#174d45]">خيرها</span>
+              <span className="mt-1 block text-[.68rem] font-bold tracking-[.13em] text-[#997840]">مونة البيت المصرية</span>
             </span>
           </a>
 
-          <nav className="hidden items-center gap-2 rounded-full border border-[#ded2b5]/70 bg-[#efe4c6]/40 p-1.5 md:flex" aria-label="التنقل الرئيسي">
-            <a href="/" className="flex items-center gap-1.5 rounded-full px-4 py-2 text-xs font-extrabold text-[#174d45] transition-all hover:bg-[#174d45] hover:text-[#fffaf0]" data-testid="link-home">
+          <nav className="flex items-center gap-2 rounded-full border border-[#ded2b5]/80 bg-[#efe4c6]/50 p-1.5" aria-label="التنقل الرئيسي">
+            <a href="/" className="flex items-center gap-1.5 rounded-full px-5 py-2 text-sm font-extrabold text-[#174d45] transition-all hover:bg-[#174d45] hover:text-[#fffaf0]" data-testid="link-home">
               الرئيسية
             </a>
-            <a href="/products" className="flex items-center gap-1.5 rounded-full px-4 py-2 text-xs font-extrabold text-[#174d45] transition-all hover:bg-[#174d45] hover:text-[#fffaf0]" data-testid="link-products">
+            <a href="/products" className="flex items-center gap-1.5 rounded-full px-5 py-2 text-sm font-extrabold text-[#174d45] transition-all hover:bg-[#174d45] hover:text-[#fffaf0]" data-testid="link-products">
               المنتجات
             </a>
-            <a href="#our-story" className="flex items-center gap-1.5 rounded-full px-4 py-2 text-xs font-extrabold text-[#174d45] transition-all hover:bg-[#174d45] hover:text-[#fffaf0]" data-testid="link-story">
+            <a href="#our-story" className="flex items-center gap-1.5 rounded-full px-5 py-2 text-sm font-extrabold text-[#174d45] transition-all hover:bg-[#174d45] hover:text-[#fffaf0]" data-testid="link-story">
               عن خيرها
             </a>
           </nav>
 
           <div className="flex items-center gap-3">
-            <a href={WHATSAPP_URL} target="_blank" rel="noreferrer" className="hidden items-center gap-2 rounded-full border border-[#25D366]/40 bg-[#25D366]/10 px-3.5 py-2 text-xs font-extrabold text-[#128C7E] transition-all hover:bg-[#25D366] hover:text-white sm:flex" data-testid="link-whatsapp">
-              <span className="relative flex h-2 w-2">
-                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#25D366] opacity-75" />
-                <span className="relative inline-flex h-2 w-2 rounded-full bg-[#25D366]" />
-              </span>
-              <MessageCircle size={16} />
-              <span>01100808082</span>
-            </a>
-
-            <button onClick={() => setCartOpen(true)} className="group relative flex h-11 items-center gap-2.5 rounded-full border-2 border-[#174d45] bg-[#fffaf0] px-4 py-2 text-xs font-extrabold text-[#174d45] shadow-[3px_3px_0_#174d45] transition-all hover:-translate-y-0.5 hover:shadow-[4px_4px_0_#174d45] active:translate-y-0 active:shadow-[1px_1px_0_#174d45]" aria-label="فتح سلة المشتريات" data-testid="button-open-cart">
-              <ShoppingBag size={18} strokeWidth={2.2} />
+            <button onClick={() => setCartOpen(true)} className="group relative flex h-11 items-center gap-2.5 rounded-full border-2 border-[#174d45] bg-[#fffaf0] px-4 py-2 text-sm font-extrabold text-[#174d45] shadow-[3px_3px_0_#174d45] transition-all hover:-translate-y-0.5 hover:shadow-[4px_4px_0_#174d45] active:translate-y-0 active:shadow-[1px_1px_0_#174d45]" aria-label="فتح سلة المشتريات" data-testid="button-open-cart">
+              <ShoppingBag size={20} strokeWidth={2.2} />
               <span className="hidden sm:inline">السلة</span>
-              {cartCount > 0 && <span className="grid min-h-5 min-w-5 place-items-center rounded-full bg-[#b8543d] px-1.5 text-[.68rem] font-bold text-[#fffaf0]" data-testid="text-cart-count">{money.format(cartCount)}</span>}
+              {cartCount > 0 && <span className="grid min-h-5 min-w-5 place-items-center rounded-full bg-[#b8543d] px-1.5 text-xs font-bold text-[#fffaf0]" data-testid="text-cart-count">{money.format(cartCount)}</span>}
             </button>
           </div>
         </div>
@@ -453,19 +444,28 @@ function ProductsPage({ activeCategory, setActiveCategory, search, setSearch, fi
           <div className="bg-[#174d45] px-4 py-2 text-center text-xs font-bold tracking-wide text-[#f9dc77]" data-testid="promo-strip-products">
             خصم 5 جنيه على منتجات عسل النحل لفترة محدودة
           </div>
-          <header className="store-shell flex items-center justify-between gap-4 py-5" data-testid="header-products-page">
-            <a href="/" className="flex items-center gap-3" data-testid="link-products-brand">
-              <span className="grid h-12 w-12 place-items-center rounded-[1.25rem] bg-[#f4c842] text-[#174d45] shadow-[4px_4px_0_#174d45]"><ShoppingBag size={25} strokeWidth={2.4} /></span>
-              <span><span className="font-display block text-[1.35rem] font-extrabold leading-none text-[#174d45]">خيرها</span><span className="mt-1 block text-[.67rem] font-bold tracking-[.13em] text-[#997840]">مونة البيت المصرية</span></span>
-            </a>
-            <div className="flex items-center gap-2.5">
-              <a href="/" className="flex items-center gap-2 rounded-full border-2 border-[#174d45] bg-[#fffaf0] px-4 py-2 text-xs font-extrabold text-[#174d45] shadow-[3px_3px_0_#174d45] transition-all hover:-translate-y-0.5 hover:bg-[#174d45] hover:text-[#fffaf0] sm:px-5 sm:py-2.5 sm:text-sm" data-testid="link-home-button">
-                <Home size={17} className="text-[#b8543d] transition-colors group-hover:text-[#f4c842]" />
-                <span>الرئيسية</span>
+          <header className="sticky top-0 z-40 w-full border-b border-[#ded2b5]/80 bg-[#fffaf0]/90 backdrop-blur-md shadow-[0_4px_20px_-10px_#174d4520] transition-all duration-300" data-testid="header-products-page">
+            <div className="store-shell flex items-center justify-between gap-4 py-3.5">
+              <a href="/" className="group flex items-center gap-3" data-testid="link-products-brand">
+                <span className="grid h-11 w-11 place-items-center rounded-2xl bg-[#f4c842] text-[#174d45] shadow-[3px_3px_0_#174d45] transition-transform duration-300 group-hover:rotate-3 group-hover:scale-105"><ShoppingBag size={23} strokeWidth={2.4} /></span>
+                <span><span className="font-display block text-[1.4rem] font-extrabold leading-none text-[#174d45]">خيرها</span><span className="mt-1 block text-[.68rem] font-bold tracking-[.13em] text-[#997840]">مونة البيت المصرية</span></span>
               </a>
-              <button type="button" onClick={onOpenCart} className="relative flex h-11 items-center gap-2 rounded-full border border-[#d9c99d] bg-[#fffaf0] px-4 text-sm font-extrabold text-[#174d45] shadow-sm transition-transform hover:-translate-y-0.5" aria-label="فتح سلة المشتريات" data-testid="button-open-products-cart">
-                <ShoppingBag size={19} /><span className="hidden sm:inline">السلة</span>{cartCount > 0 && <span className="grid min-h-6 min-w-6 place-items-center rounded-full bg-[#b8543d] px-1 text-xs text-[#fffaf0]">{money.format(cartCount)}</span>}
-              </button>
+
+              <nav className="flex items-center gap-2 rounded-full border border-[#ded2b5]/80 bg-[#efe4c6]/50 p-1.5" aria-label="التنقل في صفحة المنتجات">
+                <a href="/" className="flex items-center gap-1.5 rounded-full px-5 py-2 text-sm font-extrabold text-[#174d45] transition-all hover:bg-[#174d45] hover:text-[#fffaf0]" data-testid="link-home-nav">
+                  <Home size={16} className="text-[#b8543d]" />
+                  الرئيسية
+                </a>
+                <a href="/products" className="flex items-center gap-1.5 rounded-full bg-[#174d45] px-5 py-2 text-sm font-extrabold text-[#fffaf0]" data-testid="link-products-nav">
+                  المنتجات
+                </a>
+              </nav>
+
+              <div className="flex items-center gap-3">
+                <button type="button" onClick={onOpenCart} className="group relative flex h-11 items-center gap-2.5 rounded-full border-2 border-[#174d45] bg-[#fffaf0] px-4 py-2 text-sm font-extrabold text-[#174d45] shadow-[3px_3px_0_#174d45] transition-all hover:-translate-y-0.5 hover:shadow-[4px_4px_0_#174d45] active:translate-y-0 active:shadow-[1px_1px_0_#174d45]" aria-label="فتح سلة المشتريات" data-testid="button-open-products-cart">
+                  <ShoppingBag size={20} strokeWidth={2.2} /><span className="hidden sm:inline">السلة</span>{cartCount > 0 && <span className="grid min-h-5 min-w-5 place-items-center rounded-full bg-[#b8543d] px-1.5 text-xs font-bold text-[#fffaf0]">{money.format(cartCount)}</span>}
+                </button>
+              </div>
             </div>
           </header>
           <section id="products" className="store-shell scroll-mt-4 pb-14 pt-7 lg:pb-20 lg:pt-12" aria-labelledby="products-title">
@@ -562,24 +562,26 @@ function ProductDetails({ product, addedId, cartCount, onBack, onAdd, onOpenCart
       <div className="bg-[#174d45] px-4 py-2 text-center text-xs font-bold tracking-wide text-[#f9dc77]">
         خصم 5 جنيه على منتجات عسل النحل لفترة محدودة
       </div>
-      <header className="store-shell flex items-center justify-between gap-4 py-5">
-        <div className="flex items-center gap-2">
-          <a href="/" className="flex items-center gap-2 rounded-full border-2 border-[#174d45] bg-[#fffaf0] px-3.5 py-2 text-xs font-extrabold text-[#174d45] shadow-[2.5px_2.5px_0_#174d45] transition-all hover:-translate-y-0.5 hover:bg-[#174d45] hover:text-[#fffaf0] sm:px-4 sm:py-2.5 sm:text-sm">
-            <Home size={16} className="text-[#b8543d]" />
-            <span>الرئيسية</span>
-          </a>
-          <button type="button" onClick={onBack} className="flex items-center gap-2 rounded-full border border-[#d9c99d] bg-[#fffaf0] px-3.5 py-2 text-xs font-extrabold text-[#174d45] shadow-sm transition-transform hover:-translate-y-0.5 sm:px-4 sm:py-2.5 sm:text-sm" aria-label="العودة إلى المنتجات">
-            <ChevronRight size={18} /> كل المنتجات
-          </button>
-        </div>
-        <div className="flex items-center gap-3">
-          <button type="button" onClick={onOpenCart} className="relative flex h-11 items-center gap-2 rounded-full border border-[#d9c99d] bg-[#fffaf0] px-3 text-sm font-extrabold text-[#174d45] shadow-sm transition-transform hover:-translate-y-0.5" aria-label="فتح سلة المشتريات" data-testid="button-open-cart-details">
-            <ShoppingBag size={18} /><span className="hidden sm:inline">السلة</span>{cartCount > 0 && <span className="grid min-h-6 min-w-6 place-items-center rounded-full bg-[#b8543d] px-1 text-xs text-[#fffaf0]">{money.format(cartCount)}</span>}
-          </button>
-          <a href="/" className="flex items-center gap-2">
-            <span className="grid h-11 w-11 place-items-center rounded-[1.1rem] bg-[#f4c842] text-[#174d45] shadow-[4px_4px_0_#174d45]"><ShoppingBag size={22} /></span>
-            <span className="hidden sm:block"><span className="font-display block text-[1.2rem] font-extrabold leading-none text-[#174d45]">خيرها</span><span className="mt-1 block text-[.62rem] font-bold tracking-[.13em] text-[#997840]">مونة البيت المصرية</span></span>
-          </a>
+      <header className="sticky top-0 z-40 w-full border-b border-[#ded2b5]/80 bg-[#fffaf0]/90 backdrop-blur-md shadow-[0_4px_20px_-10px_#174d4520] transition-all duration-300">
+        <div className="store-shell flex items-center justify-between gap-4 py-3.5">
+          <div className="flex items-center gap-2">
+            <a href="/" className="flex items-center gap-2 rounded-full border-2 border-[#174d45] bg-[#fffaf0] px-4 py-2 text-sm font-extrabold text-[#174d45] shadow-[3px_3px_0_#174d45] transition-all hover:-translate-y-0.5 hover:bg-[#174d45] hover:text-[#fffaf0]">
+              <Home size={17} className="text-[#b8543d]" />
+              <span>الرئيسية</span>
+            </a>
+            <button type="button" onClick={onBack} className="flex items-center gap-2 rounded-full border border-[#d9c99d] bg-[#fffaf0] px-4 py-2 text-sm font-extrabold text-[#174d45] shadow-sm transition-transform hover:-translate-y-0.5" aria-label="العودة إلى المنتجات">
+              <ChevronRight size={18} /> كل المنتجات
+            </button>
+          </div>
+          <div className="flex items-center gap-3">
+            <button type="button" onClick={onOpenCart} className="group relative flex h-11 items-center gap-2.5 rounded-full border-2 border-[#174d45] bg-[#fffaf0] px-4 py-2 text-sm font-extrabold text-[#174d45] shadow-[3px_3px_0_#174d45] transition-all hover:-translate-y-0.5 hover:shadow-[4px_4px_0_#174d45] active:translate-y-0 active:shadow-[1px_1px_0_#174d45]" aria-label="فتح سلة المشتريات" data-testid="button-open-cart-details">
+              <ShoppingBag size={20} strokeWidth={2.2} /><span className="hidden sm:inline">السلة</span>{cartCount > 0 && <span className="grid min-h-5 min-w-5 place-items-center rounded-full bg-[#b8543d] px-1.5 text-xs font-bold text-[#fffaf0]">{money.format(cartCount)}</span>}
+            </button>
+            <a href="/" className="group flex items-center gap-2">
+              <span className="grid h-11 w-11 place-items-center rounded-2xl bg-[#f4c842] text-[#174d45] shadow-[3px_3px_0_#174d45] transition-transform duration-300 group-hover:rotate-3 group-hover:scale-105"><ShoppingBag size={22} /></span>
+              <span className="hidden sm:block"><span className="font-display block text-[1.3rem] font-extrabold leading-none text-[#174d45]">خيرها</span><span className="mt-1 block text-[.66rem] font-bold tracking-[.13em] text-[#997840]">مونة البيت المصرية</span></span>
+            </a>
+          </div>
         </div>
       </header>
       <section className="store-shell pb-16 pt-5 lg:pb-24 lg:pt-10">
