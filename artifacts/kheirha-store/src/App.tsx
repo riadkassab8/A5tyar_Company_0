@@ -202,7 +202,7 @@ function HeroCarousel({ onSelectCategory, onBrowse }: { onSelectCategory: (cat: 
       cardBg: 'bg-gradient-to-br from-[#2a4e47] via-[#174d45] to-[#113831]',
       accentBg: 'bg-[#997840]',
       badgeText: 'طبيعي 100%',
-      badgeTitle: 'سمن وزبد خيرها',
+      badgeTitle: 'سمن وزبد أختيار',
       icon: PackageCheck,
     },
   ];
@@ -219,8 +219,8 @@ function HeroCarousel({ onSelectCategory, onBrowse }: { onSelectCategory: (cat: 
   const Icon = active.icon;
 
   return (
-    <section 
-      className="store-shell py-6" 
+    <section
+      className="store-shell py-6"
       aria-label="عرض العروض الرئيسية"
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
@@ -334,7 +334,7 @@ function MobileNavDrawer({ isOpen, onClose }: { isOpen: boolean; onClose: () => 
               <ShoppingBag size={21} strokeWidth={2.2} />
             </span>
             <span>
-              <span className="font-display block text-lg font-extrabold text-[#174d45]">خيرها</span>
+              <span className="font-display block text-lg font-extrabold text-[#174d45]">أختيار</span>
               <span className="block text-[.6rem] font-bold text-[#997840]">مونة البيت المصرية</span>
             </span>
           </div>
@@ -363,7 +363,7 @@ function MobileNavDrawer({ isOpen, onClose }: { isOpen: boolean; onClose: () => 
             className="flex items-center gap-3 rounded-2xl bg-[#efe4c6]/60 px-4 py-3.5 text-sm font-extrabold text-[#174d45] transition-colors hover:bg-[#174d45] hover:text-[#fffaf0]"
           >
             <ShoppingBag size={19} className="text-[#b8543d]" />
-            <span>منتجات خيرها</span>
+            <span>منتجات أختيار</span>
           </a>
           <a
             href="#our-story"
@@ -371,7 +371,7 @@ function MobileNavDrawer({ isOpen, onClose }: { isOpen: boolean; onClose: () => 
             className="flex items-center gap-3 rounded-2xl bg-[#efe4c6]/60 px-4 py-3.5 text-sm font-extrabold text-[#174d45] transition-colors hover:bg-[#174d45] hover:text-[#fffaf0]"
           >
             <FileText size={19} className="text-[#b8543d]" />
-            <span>عن خيرها</span>
+            <span>عن أختيار</span>
           </a>
         </nav>
 
@@ -507,7 +507,7 @@ function Storefront() {
               <ShoppingBag size={23} strokeWidth={2.4} />
             </span>
             <span>
-              <span className="font-display block text-[1.4rem] font-extrabold leading-none text-[#174d45]">خيرها</span>
+              <span className="font-display block text-[1.4rem] font-extrabold leading-none text-[#174d45]">أختيار</span>
               <span className="mt-1 block text-[.68rem] font-bold tracking-[.13em] text-[#997840]">مونة البيت المصرية</span>
             </span>
           </a>
@@ -520,7 +520,7 @@ function Storefront() {
               المنتجات
             </a>
             <a href="#our-story" className="flex items-center gap-1.5 rounded-full px-5 py-2 text-sm font-extrabold text-[#174d45] transition-all hover:bg-[#174d45] hover:text-[#fffaf0]" data-testid="link-story">
-              عن خيرها
+              عن أختيار
             </a>
           </nav>
 
@@ -546,7 +546,7 @@ function Storefront() {
 
       <HeroCarousel onSelectCategory={setActiveCategory} onBrowse={scrollToProducts} />
 
-      <section className="bg-[#174d45] py-5 text-[#fffaf0]" aria-label="مميزات خيرها">
+      <section className="bg-[#174d45] py-5 text-[#fffaf0]" aria-label="مميزات أختيار">
         <div className="store-shell grid gap-4 text-sm font-bold sm:grid-cols-3">
           <div className="flex items-center gap-3"><PackageCheck className="text-[#f4c842]" size={21} /><span>مونة مختارة للبيت</span></div>
           <div className="flex items-center gap-3"><Wheat className="text-[#f4c842]" size={21} /><span>قائمة أسعار واضحة ومحدثة</span></div>
@@ -562,7 +562,7 @@ function Storefront() {
               <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-[#f4c842] text-[#174d45] shadow-[3px_3px_0_#174d45]">
                 <ShoppingBag size={30} strokeWidth={2.2} />
               </div>
-              <span className="font-display text-2xl font-extrabold text-[#174d45]">منتجات خيرها الأصيلة</span>
+              <span className="font-display text-2xl font-extrabold text-[#174d45]">منتجات أختيار الأصيلة</span>
               <p className="mt-2 text-xs font-bold leading-6 text-[#70877f]">
                 جودة عالية وسعر عادل لكل منتجات المطبخ والعسل البلدي والألبان والمربيات.
               </p>
@@ -572,11 +572,11 @@ function Storefront() {
                 <span className="rounded-full bg-[#efe4c6] px-3 py-1 text-[.7rem] font-extrabold text-[#174d45]">مونة البيت</span>
               </div>
             </div>
-            <div className="absolute -bottom-4 -left-4 rounded-xl bg-[#f4c842] px-4 py-3 text-xs font-extrabold text-[#174d45] shadow-md">جودة وضمان خيرها</div>
+            <div className="absolute -bottom-4 -left-4 rounded-xl bg-[#f4c842] px-4 py-3 text-xs font-extrabold text-[#174d45] shadow-md">جودة وضمان أختيار</div>
           </div>
           <div>
             <div className="mb-4 flex items-center gap-2 text-xs font-extrabold tracking-[.14em] text-[#b8543d]"><FileText size={16} /> من قائمتنا إلى سلتك</div>
-            <h2 className="font-display max-w-xl text-3xl font-extrabold leading-[1.45] text-[#174d45] sm:text-4xl">خيرها، لأن المونة الحلوة تبدأ من <span className="text-[#b8543d]">اختيار صح.</span></h2>
+            <h2 className="font-display max-w-xl text-3xl font-extrabold leading-[1.45] text-[#174d45] sm:text-4xl">أختيار، لأن المونة الحلوة تبدأ من <span className="text-[#b8543d]">اختيار صح.</span></h2>
             <p className="mt-5 max-w-xl text-base font-semibold leading-8 text-[#58736d]">نحن نرتب لك احتياجات المطبخ كما تحبها: واضحة، معروفة، ومن غير لف كتير. شوف السعر، اختار الكمية، وابعت طلبك في رسالة واحدة.</p>
             <div className="mt-7 grid max-w-xl gap-4 sm:grid-cols-2">
               <div className="rounded-2xl border border-[#d5c49e] bg-[#fffaf0] p-4"><Wheat size={22} className="mb-3 text-[#b8543d]" /><h3 className="font-bold text-[#174d45]">مونة كل يوم</h3><p className="mt-1 text-xs font-semibold leading-5 text-[#70877f]">سكر، دقيق، رز، بقوليات وأكثر.</p></div>
@@ -589,7 +589,7 @@ function Storefront() {
       <footer className="bg-[#174d45] py-10 text-[#fffaf0]" data-testid="footer-store">
         <div className="store-shell flex flex-col gap-8 sm:flex-row sm:items-end sm:justify-between">
           <div>
-            <div className="flex items-center gap-3"><span className="grid h-10 w-10 place-items-center rounded-xl bg-[#f4c842] text-[#174d45]"><ShoppingBag size={20} /></span><span className="font-display text-2xl font-extrabold">خيرها</span></div>
+            <div className="flex items-center gap-3"><span className="grid h-10 w-10 place-items-center rounded-xl bg-[#f4c842] text-[#174d45]"><ShoppingBag size={20} /></span><span className="font-display text-2xl font-extrabold">أختيار</span></div>
             <p className="mt-3 max-w-xs text-sm font-semibold leading-6 text-[#bad0c5]">مونة البيت المصرية، بشكل أسهل وأقرب.</p>
           </div>
           <div className="flex flex-col items-start gap-3 text-sm font-bold sm:items-end">
@@ -597,7 +597,7 @@ function Storefront() {
             <a href={WHATSAPP_URL} target="_blank" rel="noreferrer" className="flex items-center gap-2 text-lg transition-colors hover:text-[#f4c842]" data-testid="link-footer-whatsapp"><MessageCircle size={19} /> 01100808082</a>
           </div>
         </div>
-        <div className="store-shell mt-8 border-t border-[#4d776e] pt-5 text-xs font-semibold text-[#9bb9ae]">© خيرها — أسعار ومنتجات البيت بعناية.</div>
+        <div className="store-shell mt-8 border-t border-[#4d776e] pt-5 text-xs font-semibold text-[#9bb9ae]">© أختيار — أسعار ومنتجات البيت بعناية.</div>
       </footer>
 
       {cartCount > 0 && <button onClick={() => setCartOpen(true)} className="fixed inset-x-4 bottom-4 z-30 flex items-center justify-between rounded-2xl bg-[#f4c842] px-5 py-3.5 text-sm font-extrabold text-[#174d45] shadow-[0_8px_25px_#174d4540] md:hidden" data-testid="button-mobile-cart"><span className="flex items-center gap-2"><ShoppingBag size={19} /> السلة ({money.format(cartCount)})</span><span>{formatPrice(subtotal)} <ArrowLeft className="mr-1 inline" size={16} /></span></button>}
@@ -643,7 +643,7 @@ function ProductsPage({ activeCategory, setActiveCategory, search, setSearch, fi
             <div className="store-shell flex items-center justify-between gap-4 py-3.5">
               <a href="/" className="group flex items-center gap-3" data-testid="link-products-brand">
                 <span className="grid h-11 w-11 place-items-center rounded-2xl bg-[#f4c842] text-[#174d45] shadow-[3px_3px_0_#174d45] transition-transform duration-300 group-hover:rotate-3 group-hover:scale-105"><ShoppingBag size={23} strokeWidth={2.4} /></span>
-                <span><span className="font-display block text-[1.4rem] font-extrabold leading-none text-[#174d45]">خيرها</span><span className="mt-1 block text-[.68rem] font-bold tracking-[.13em] text-[#997840]">مونة البيت المصرية</span></span>
+                <span><span className="font-display block text-[1.4rem] font-extrabold leading-none text-[#174d45]">أختيار</span><span className="mt-1 block text-[.68rem] font-bold tracking-[.13em] text-[#997840]">مونة البيت المصرية</span></span>
               </a>
 
               <nav className="hidden md:flex items-center gap-2 rounded-full border border-[#ded2b5]/80 bg-[#efe4c6]/50 p-1.5" aria-label="التنقل في صفحة المنتجات">
@@ -680,7 +680,7 @@ function ProductsPage({ activeCategory, setActiveCategory, search, setSearch, fi
             <div className="mb-8 flex flex-col justify-between gap-5 md:flex-row md:items-end">
               <div>
                 <div className="mb-3 flex items-center gap-2 text-xs font-extrabold tracking-[.14em] text-[#b8543d]"><span className="h-px w-8 bg-[#b8543d]" /> اختار اللي ناقصك</div>
-                <h1 id="products-title" className="font-display text-4xl font-extrabold text-[#174d45] sm:text-5xl">كل منتجات خيرها</h1>
+                <h1 id="products-title" className="font-display text-4xl font-extrabold text-[#174d45] sm:text-5xl">كل منتجات أختيار</h1>
                 <p className="mt-2 max-w-xl text-sm font-semibold leading-7 text-[#70877f]">كل منتج في بطاقة واحدة، اختار الحجم من صفحة التفاصيل وأضفه للسلة بسهولة.</p>
               </div>
               <label className="flex w-full items-center gap-2 rounded-full border border-[#d9c99d] bg-[#fffaf0] px-4 py-3 text-sm text-[#70877f] shadow-sm md:max-w-xs">
@@ -710,12 +710,12 @@ function ProductsPage({ activeCategory, setActiveCategory, search, setSearch, fi
           <section className="store-shell pt-10 pb-14 lg:pt-14 lg:pb-20">
             <div className="grain relative overflow-hidden rounded-[2rem] bg-[#b8543d] px-6 py-10 text-[#fffaf0] shadow-[10px_10px_0_#f4c842] sm:px-12 sm:py-12 lg:flex lg:items-center lg:justify-between">
               <div className="relative z-10 max-w-xl"><div className="mb-4 flex items-center gap-2 text-xs font-extrabold tracking-[.12em] text-[#f9dc77]"><Clock3 size={15} /> عرض لفترة محدودة</div><h2 className="font-display text-3xl font-extrabold leading-tight sm:text-4xl">حلاوة العسل تزيد،<br />وسعرها يقل 5 جنيه.</h2><p className="mt-3 max-w-md text-sm font-semibold leading-7 text-[#ffe5cf]">الخصم مطبق على منتجات عسل النحل فقط. السعر الأصلي ظاهر لك جنب السعر بعد الخصم.</p></div>
-              <div className="relative z-10 mt-8 flex items-end gap-3 lg:mt-0" aria-hidden="true"><div className="h-28 w-20 rotate-[-8deg] rounded-t-2xl border-4 border-[#174d45] bg-[#f4c842] shadow-[6px_6px_0_#174d45]"><div className="mt-9 border-y-2 border-[#174d45] py-1 text-center text-[.55rem] font-extrabold text-[#174d45]">عسل</div></div><div className="h-40 w-28 rotate-[6deg] rounded-t-3xl border-4 border-[#174d45] bg-[#f7e8b5] shadow-[6px_6px_0_#174d45]"><div className="mt-14 border-y-2 border-[#174d45] py-2 text-center text-xs font-extrabold text-[#174d45]">خيرها</div></div><div className="absolute -right-5 -top-5 grid h-16 w-16 rotate-12 place-items-center rounded-full border-4 border-[#174d45] bg-[#f4c842] text-center text-[.65rem] font-extrabold leading-4 text-[#174d45]">خصم<br />٥ ج</div></div>
+              <div className="relative z-10 mt-8 flex items-end gap-3 lg:mt-0" aria-hidden="true"><div className="h-28 w-20 rotate-[-8deg] rounded-t-2xl border-4 border-[#174d45] bg-[#f4c842] shadow-[6px_6px_0_#174d45]"><div className="mt-9 border-y-2 border-[#174d45] py-1 text-center text-[.55rem] font-extrabold text-[#174d45]">عسل</div></div><div className="h-40 w-28 rotate-[6deg] rounded-t-3xl border-4 border-[#174d45] bg-[#f7e8b5] shadow-[6px_6px_0_#174d45]"><div className="mt-14 border-y-2 border-[#174d45] py-2 text-center text-xs font-extrabold text-[#174d45]">أختيار</div></div><div className="absolute -right-5 -top-5 grid h-16 w-16 rotate-12 place-items-center rounded-full border-4 border-[#174d45] bg-[#f4c842] text-center text-[.65rem] font-extrabold leading-4 text-[#174d45]">خصم<br />٥ ج</div></div>
             </div>
           </section>
           <footer className="bg-[#174d45] py-10 text-[#fffaf0]" data-testid="footer-products">
-            <div className="store-shell flex flex-col gap-8 sm:flex-row sm:items-end sm:justify-between"><div><div className="flex items-center gap-3"><span className="grid h-10 w-10 place-items-center rounded-xl bg-[#f4c842] text-[#174d45]"><ShoppingBag size={20} /></span><span className="font-display text-2xl font-extrabold">خيرها</span></div><p className="mt-3 max-w-xs text-sm font-semibold leading-6 text-[#bad0c5]">مونة البيت المصرية، بشكل أسهل وأقرب.</p></div><div className="flex flex-col items-start gap-3 text-sm font-bold sm:items-end"><span className="text-[#f9dc77]">للطلب والاستفسار</span><a href={WHATSAPP_URL} target="_blank" rel="noreferrer" className="flex items-center gap-2 text-lg transition-colors hover:text-[#f4c842]"><MessageCircle size={19} /> 01100808082</a></div></div>
-            <div className="store-shell mt-8 border-t border-[#4d776e] pt-5 text-xs font-semibold text-[#9bb9ae]">© خيرها — أسعار ومنتجات البيت بعناية.</div>
+            <div className="store-shell flex flex-col gap-8 sm:flex-row sm:items-end sm:justify-between"><div><div className="flex items-center gap-3"><span className="grid h-10 w-10 place-items-center rounded-xl bg-[#f4c842] text-[#174d45]"><ShoppingBag size={20} /></span><span className="font-display text-2xl font-extrabold">أختيار</span></div><p className="mt-3 max-w-xs text-sm font-semibold leading-6 text-[#bad0c5]">مونة البيت المصرية، بشكل أسهل وأقرب.</p></div><div className="flex flex-col items-start gap-3 text-sm font-bold sm:items-end"><span className="text-[#f9dc77]">للطلب والاستفسار</span><a href={WHATSAPP_URL} target="_blank" rel="noreferrer" className="flex items-center gap-2 text-lg transition-colors hover:text-[#f4c842]"><MessageCircle size={19} /> 01100808082</a></div></div>
+            <div className="store-shell mt-8 border-t border-[#4d776e] pt-5 text-xs font-semibold text-[#9bb9ae]">© أختيار — أسعار ومنتجات البيت بعناية.</div>
           </footer>
         </>
       )}
@@ -787,7 +787,7 @@ function ProductDetails({ product, addedId, cartCount, onBack, onAdd, onOpenCart
             </button>
             <a href="/" className="group flex items-center gap-2">
               <span className="grid h-11 w-11 place-items-center rounded-2xl bg-[#f4c842] text-[#174d45] shadow-[3px_3px_0_#174d45] transition-transform duration-300 group-hover:rotate-3 group-hover:scale-105"><ShoppingBag size={22} /></span>
-              <span className="hidden sm:block"><span className="font-display block text-[1.3rem] font-extrabold leading-none text-[#174d45]">خيرها</span><span className="mt-1 block text-[.66rem] font-bold tracking-[.13em] text-[#997840]">مونة البيت المصرية</span></span>
+              <span className="hidden sm:block"><span className="font-display block text-[1.3rem] font-extrabold leading-none text-[#174d45]">أختيار</span><span className="mt-1 block text-[.66rem] font-bold tracking-[.13em] text-[#997840]">مونة البيت المصرية</span></span>
             </a>
           </div>
         </div>
@@ -835,7 +835,7 @@ function CartDrawer({ cart, subtotal, inquiryCount, onClose, onUpdate, onRemove,
       <button className="absolute inset-0 h-full w-full cursor-default bg-[#174d45]/45 backdrop-blur-[2px]" onClick={onClose} aria-label="إغلاق السلة" data-testid="button-close-cart-backdrop" />
       <aside className="animate-float-in absolute bottom-0 right-0 top-0 flex w-full max-w-md flex-col border-l border-[#d9c99d] bg-[#fffaf0] shadow-2xl">
         <header className="flex items-center justify-between border-b border-[#ded2b5] px-5 py-5">
-          <div><p className="text-xs font-bold text-[#b8543d]">طلبك الحالي</p><h2 id="cart-title" className="font-display mt-1 text-2xl font-extrabold text-[#174d45]">سلة خيرها</h2></div>
+          <div><p className="text-xs font-bold text-[#b8543d]">طلبك الحالي</p><h2 id="cart-title" className="font-display mt-1 text-2xl font-extrabold text-[#174d45]">سلة أختيار</h2></div>
           <button onClick={onClose} className="grid h-10 w-10 place-items-center rounded-full border border-[#d9c99d] text-[#174d45] transition-colors hover:bg-[#efe4c6]" aria-label="إغلاق السلة" data-testid="button-close-cart"><X size={20} /></button>
         </header>
         <div className="flex-1 overflow-y-auto px-5 py-5">
