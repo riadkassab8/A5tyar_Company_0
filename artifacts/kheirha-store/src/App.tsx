@@ -1,11 +1,9 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import type { ComponentType } from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import {
   ArrowLeft,
-  ArrowUpLeft,
   Check,
-  ChevronDown,
   ChevronLeft,
   ChevronRight,
   CircleHelp,
@@ -30,60 +28,103 @@ import pantryReference from '@assets/WhatsApp_Image_2026-09-09_at_7.28.33_PM_178
 import honeyReference from '@assets/image_1788972021911.png';
 
 type Category = 'أساسيات البيت' | 'عسل النحل' | 'منتجات الألبان' | 'منتجات السمسم' | 'المربيات';
+type Variant = {
+  id: string;
+  size: string;
+  price: number | null;
+  discountEligible: boolean;
+};
 type Product = {
   id: string;
   name: string;
-  size: string;
-  price: number | null;
   category: Category;
+  variants: Variant[];
   accent: string;
   icon: ComponentType<{ size?: number; strokeWidth?: number }>;
 };
-type CartItem = Product & { quantity: number };
+type CartItem = {
+  id: string;
+  productId: string;
+  name: string;
+  size: string;
+  price: number | null;
+  discountEligible: boolean;
+  quantity: number;
+};
 type CatalogRow = readonly [string, string, number | null];
+type ProductSeed = Omit<Product, 'accent' | 'icon'>;
 
 const WHATSAPP_URL = 'https://wa.me/201098277229';
 const money = new Intl.NumberFormat('ar-EG');
 const categories = ['الكل', 'أساسيات البيت', 'عسل النحل', 'منتجات الألبان', 'منتجات السمسم', 'المربيات'] as const;
 
-const pantry: Omit<Product, 'accent' | 'icon'>[] = ([
-  ['سكر', '1 كيلو', 25], ['دقيق', '1 كيلو', 21], ['ارز ابيض عريض الحبة', '1 كيلو', 21],
-  ['ارز ابيض رفيع الحبة', '1 كيلو', 26], ['ارز ابيض رفيع الحبة', '3 كيلو', 75],
-  ['ارز ابيض رفيع الحبة', '5 كيلو', 125], ['زيت', '1 لتر', 70], ['زيت', '900 مل', 64],
-  ['زيت', '700 مل', 50], ['خل', '1 لتر', 12], ['فول بلدي', '1/2 كيلو', 25],
-  ['عدس اصفر', '1/2 كيلو', 25], ['عدس بجبة', '1/2 كيلو', 33], ['لوبيا', '1/2 كيلو', 28],
-  ['فاصوليا بيضاء', '1/2 كيلو', 30], ['ذرة فشار', '1/2 كيلو', 21], ['حمص الشام', '1/2 كيلو', 33],
-] as CatalogRow[]).map(([name, size, price], index) => ({ id: `pantry-${index}`, name, size, price, category: 'أساسيات البيت' }));
+const groupRows = (
+  rows: readonly CatalogRow[],
+  category: Category,
+  prefix: string,
+  discountNames: (name: string) => boolean = () => false,
+): ProductSeed[] => {
+  const grouped = new Map<string, ProductSeed>();
+  rows.forEach(([name, size, price], index) => {
+    const variant: Variant = {
+      id: `${prefix}-variant-${index}`,
+      size,
+      price,
+      discountEligible: discountNames(name),
+    };
+    const current = grouped.get(name);
+    if (current) {
+      current.variants.push(variant);
+    } else {
+      grouped.set(name, {
+        id: `${prefix}-${grouped.size}`,
+        name,
+        category,
+        variants: [variant],
+      });
+    }
+  });
+  return [...grouped.values()];
+};
 
-const honey: Omit<Product, 'accent' | 'icon'>[] = ([
-  ['عسل نحل فوارة برسم', '500 جرام', 75], ['عسل نحل فوارة برسم', '1 كجم', 145],
-  ['عسل نحل زهرة موالح', '500 جرام', 100], ['عسل نحل زهرة موالح', '1 كجم', 190],
-  ['عسل نحل حبة البركة', '500 جرام', 95], ['عسل نحل حبة البركة', '1 كجم', 180],
-  ['عسل نحل حبة بردقوش', '500 جرام', 95], ['عسل نحل حبة بردقوش', '1 كجم', 180],
-  ['عسل نحل كافور', '500 جرام', 95], ['عسل نحل كافور', '1 كجم', 180],
-  ['عسل نحل سدر جبلي', '500 جرام', 200], ['عسل نحل سدر جبلي', '1 كجم', 380],
-  ['شمع عسل', '250 جرام', 63], ['شمع عسل', '500 جرام', 125], ['عسل اسود', '500 جرام', 35],
-  ['عسل اسود', '1 كجم', 65],
-] as CatalogRow[]).map(([name, size, price], index) => ({ id: `honey-${index}`, name, size, price, category: 'عسل النحل' }));
+const pantry = groupRows([
+  ['سكر', '١ كيلو', 25], ['دقيق', '١ كيلو', 21], ['ارز ابيض عريض الحبة', '١ كيلو', 31],
+  ['ارز ابيض رفيع الحبة', '١ كيلو', 26], ['ارز ابيض رفيع الحبة', '٣ كيلو', 75],
+  ['ارز ابيض رفيع الحبة', '٥ كيلو', 125], ['زيت', '١ لتر', 70], ['زيت', '٩٠٠ مل', 64],
+  ['زيت', '٧٠٠ مل', 50], ['خل', '١ لتر', 12], ['فول بلدي', '½ كيلو', 25],
+  ['عدس اصفر', '½ كيلو', 25], ['عدس بجبة', '½ كيلو', 23], ['لوبيا', '½ كيلو', 28],
+  ['فاصوليا بيضاء', '½ كيلو', 30], ['ذرة فشار', '½ كيلو', 21], ['حمص الشام', '½ كيلو', 32],
+] as CatalogRow[], 'أساسيات البيت', 'pantry');
 
-const dairy: Omit<Product, 'accent' | 'icon'>[] = ([
-  ['زبادي بقري قشطة جاهزة', '1 كجم', 160], ['زبادي جاموسي قشطة جاهزة', '1 كجم', 180],
-  ['زبادي بقري خليط', '1 كجم', 205], ['زبادي جاموسي خليط', '1 كجم', 225],
-  ['زبادي بقري طبيعي', '1 كجم', 320], ['زبادي جاموسي طبيعي', '1 كجم', 340],
-  ['سمن بقري طبيعي', '550 جرام', 210], ['سمن جاموسي طبيعي', '1 كجم', 380],
-  ['سمن بقري طبيعي', '550 جرام', 220],
-] as CatalogRow[]).map(([name, size, price], index) => ({ id: `dairy-${index}`, name, size, price, category: 'منتجات الألبان' }));
+const honey = groupRows([
+  ['عسل نحل نوارة برسيم', '٥٠٠ جرام', 75], ['عسل نحل نوارة برسيم', '١ كجم', 145],
+  ['عسل نحل زهرة موالح', '٥٠٠ جرام', 100], ['عسل نحل زهرة موالح', '١ كجم', 190],
+  ['عسل نحل حبة البركة', '٥٠٠ جرام', 95], ['عسل نحل حبة البركة', '١ كجم', 180],
+  ['عسل نحل حبة بردقوش', '٥٠٠ جرام', 95], ['عسل نحل حبة بردقوش', '١ كجم', 180],
+  ['عسل نحل كافور', '٥٠٠ جرام', 95], ['عسل نحل كافور', '١ كجم', 180],
+  ['عسل نحل سدر جبلي', '٥٠٠ جرام', 200], ['عسل نحل سدر جبلي', '١ كجم', 380],
+  ['شمع عسل', '٢٥٠ جرام', 63], ['شمع عسل', '٥٠٠ جرام', 125],
+  ['عسل أسود', '٥٠٠ جرام', 35], ['عسل أسود', '١ كجم', 65],
+] as CatalogRow[], 'عسل النحل', 'honey', (name) => name.startsWith('عسل نحل') || name === 'شمع عسل');
 
-const sesame: Omit<Product, 'accent' | 'icon'>[] = ([
-  ['طحينة صافي', '900 جرام', 150], ['حلاوة بلدي سادة', '550 جرام', null], ['حلاوة بلدي فستق', '550 جرام', null],
-] as CatalogRow[]).map(([name, size, price], index) => ({ id: `sesame-${index}`, name, size, price, category: 'منتجات السمسم' }));
+const dairy = groupRows([
+  ['زبد بقري قشطة جاهزة', '١ كجم', 160], ['زبد جاموسي قشطة جاهزة', '١ كجم', 180],
+  ['زبد بقري خليط', '١ كجم', 205], ['زبد جاموسي خليط', '١ كجم', 225],
+  ['زبد بقري طبيعي', '١ كجم', 320], ['زبد جاموسي طبيعي', '١ كجم', 340],
+  ['سمن بقري طبيعي', '٥٥٠ جرام', 210], ['سمن بقري طبيعي', '١ كجم', 380],
+  ['سمن جاموسي طبيعي', '٥٥٠ جرام', 220], ['سمن جاموسي طبيعي', '١ كجم', 410],
+] as CatalogRow[], 'منتجات الألبان', 'dairy');
 
-const jams: Omit<Product, 'accent' | 'icon'>[] = ([
-  ['مربي فراولة سبريد', '1 كجم', null], ['مربي فراولة قطع', '1 كجم', null], ['مربي تين سبريد', '1 كجم', null],
-  ['مربي تين قطع', '1 كجم', null], ['مربي جزر مبشور', '1 كجم', null], ['مربي قرع مبشور', '1 كجم', null],
-  ['مربي تفاح', '1 كجم', null], ['مربي طماطم', '1 كجم', null], ['مربي كيكوات', '1 كجم', null],
-  ['مربي بلح', '1 كجم', null],
- ] as CatalogRow[]).map(([name, size, price], index) => ({ id: `jam-${index}`, name, size, price, category: 'المربيات' }));
+const sesame = groupRows([
+  ['طحينة صافي', '٩٠٠ جرام', 150], ['حلاوة بلدي سادة', '٥٥٠ جرام', 150], ['حلاوة بلدي فستق', '٥٥٠ جرام', 150],
+] as CatalogRow[], 'منتجات السمسم', 'sesame');
+
+const jams = groupRows([
+  ['مربى فراولة سبيريد', '١ كجم', null], ['مربى فراولة قطع', '١ كجم', null], ['مربى تين سبيريد', '١ كجم', null],
+  ['مربى تين قطع', '١ كجم', null], ['مربى جزر مهروس', '١ كجم', null], ['مربى جزر مبشور', '١ كجم', null],
+  ['مربى قرع مهروس', '١ كجم', null], ['مربى قرع مبشور', '١ كجم', null], ['مربى تفاح', '١ كجم', null],
+  ['مربى طماطم', '١ كجم', null], ['مربى كمكوات', '١ كجم', null], ['مربى بلح', '١ كجم', null],
+] as CatalogRow[], 'المربيات', 'jams');
 
 const productData: Product[] = [...pantry, ...honey, ...dairy, ...sesame, ...jams].map((product) => ({
   ...product,
@@ -91,7 +132,7 @@ const productData: Product[] = [...pantry, ...honey, ...dairy, ...sesame, ...jam
   icon: product.category === 'عسل النحل' ? Droplets : product.category === 'أساسيات البيت' ? Wheat : product.category === 'منتجات الألبان' ? PackageCheck : product.category === 'منتجات السمسم' ? CircleHelp : Heart,
 }));
 
-const displayPrice = (product: Product) => product.price === null ? null : product.name.startsWith('عسل نحل') ? product.price - 5 : product.price;
+const displayPrice = (variant: Pick<Variant, 'price' | 'discountEligible'>) => variant.price === null ? null : variant.discountEligible ? variant.price - 5 : variant.price;
 const formatPrice = (price: number) => `${money.format(price)} ج.م`;
 
 function App() {
@@ -112,11 +153,12 @@ function Storefront() {
   const [search, setSearch] = useState('');
   const [cart, setCart] = useState<CartItem[]>([]);
   const [cartOpen, setCartOpen] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [addedId, setAddedId] = useState<string | null>(null);
 
   const filteredProducts = useMemo(() => productData.filter((product) => {
     const inCategory = activeCategory === 'الكل' || product.category === activeCategory;
-    const searchMatch = `${product.name} ${product.size}`.includes(search.trim());
+    const searchMatch = `${product.name} ${product.variants.map((variant) => variant.size).join(' ')}`.includes(search.trim());
     return inCategory && searchMatch;
   }), [activeCategory, search]);
 
@@ -124,14 +166,23 @@ function Storefront() {
   const subtotal = cart.reduce((sum, item) => sum + (displayPrice(item) ?? 0) * item.quantity, 0);
   const inquiryCount = cart.filter((item) => item.price === null).reduce((sum, item) => sum + item.quantity, 0);
 
-  const addToCart = (product: Product) => {
+  const addToCart = (product: Product, variant: Variant) => {
+    const cartItemId = `${product.id}:${variant.id}`;
     setCart((current) => {
-      const found = current.find((item) => item.id === product.id);
+      const found = current.find((item) => item.id === cartItemId);
       return found
-        ? current.map((item) => item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item)
-        : [...current, { ...product, quantity: 1 }];
+        ? current.map((item) => item.id === cartItemId ? { ...item, quantity: item.quantity + 1 } : item)
+        : [...current, {
+          id: cartItemId,
+          productId: product.id,
+          name: product.name,
+          size: variant.size,
+          price: variant.price,
+          discountEligible: variant.discountEligible,
+          quantity: 1,
+        }];
     });
-    setAddedId(product.id);
+    setAddedId(variant.id);
     window.setTimeout(() => setAddedId(null), 1100);
   };
 
@@ -160,6 +211,36 @@ function Storefront() {
   };
 
   const scrollToProducts = () => document.getElementById('products')?.scrollIntoView({ behavior: 'smooth' });
+  const openProduct = (product: Product) => {
+    setSelectedProduct(product);
+    setCartOpen(false);
+    window.scrollTo({ top: 0, behavior: 'auto' });
+  };
+  const closeProduct = () => {
+    setSelectedProduct(null);
+    window.scrollTo({ top: 0, behavior: 'auto' });
+  };
+
+  useEffect(() => {
+    if (selectedProduct) window.scrollTo({ top: 0, behavior: 'auto' });
+  }, [selectedProduct]);
+
+  if (selectedProduct) {
+    return (
+      <main className="min-h-[100dvh] overflow-x-hidden">
+        <ProductDetails
+          product={selectedProduct}
+          addedId={addedId}
+          cartCount={cartCount}
+          onBack={closeProduct}
+          onAdd={addToCart}
+          onOpenCart={() => setCartOpen(true)}
+        />
+        {cartCount > 0 && <button onClick={() => setCartOpen(true)} className="fixed inset-x-4 bottom-4 z-30 flex items-center justify-between rounded-2xl bg-[#f4c842] px-5 py-3.5 text-sm font-extrabold text-[#174d45] shadow-[0_8px_25px_#174d4540] md:hidden" data-testid="button-mobile-cart"><span className="flex items-center gap-2"><ShoppingBag size={19} /> السلة ({money.format(cartCount)})</span><span>{formatPrice(subtotal)} <ArrowLeft className="mr-1 inline" size={16} /></span></button>}
+        {cartOpen && <CartDrawer cart={cart} subtotal={subtotal} inquiryCount={inquiryCount} onClose={() => setCartOpen(false)} onUpdate={updateQuantity} onRemove={removeFromCart} onCheckout={checkout} />}
+      </main>
+    );
+  }
 
   return (
     <main className="min-h-[100dvh] overflow-x-hidden">
@@ -270,7 +351,7 @@ function Storefront() {
         </div>
         {filteredProducts.length ? (
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 lg:grid-cols-4">
-            {filteredProducts.map((product, index) => <ProductCard key={product.id} product={product} index={index} added={addedId === product.id} onAdd={() => addToCart(product)} />)}
+            {filteredProducts.map((product, index) => <ProductCard key={product.id} product={product} index={index} onOpen={() => openProduct(product)} />)}
           </div>
         ) : (
           <div className="rounded-3xl border border-dashed border-[#cbbd98] bg-[#fffaf0] px-6 py-16 text-center" data-testid="empty-product-search">
@@ -336,37 +417,97 @@ function Storefront() {
   );
 }
 
-function ProductCard({ product, index, added, onAdd }: { product: Product; index: number; added: boolean; onAdd: () => void }) {
+function ProductCard({ product, index, onOpen }: { product: Product; index: number; onOpen: () => void }) {
   const Icon = product.icon;
-  const currentPrice = displayPrice(product);
-  const isDiscounted = product.name.startsWith('عسل نحل');
+  const isDiscounted = product.variants.some((variant) => variant.discountEligible);
+  const priceVariants = product.variants.filter((variant) => variant.price !== null);
+  const lowestPrice = priceVariants.length ? Math.min(...priceVariants.map((variant) => displayPrice(variant) as number)) : null;
   return (
-    <article className={`product-card animate-float-in delay-${Math.min((index % 3) + 1, 3)} overflow-hidden rounded-[1.25rem] border border-[#ded2b5] bg-[#fffaf0] p-3 shadow-sm sm:p-4`} data-testid={`card-product-${product.id}`}>
+    <button type="button" onClick={onOpen} className={`product-card animate-float-in delay-${Math.min((index % 3) + 1, 3)} group w-full overflow-hidden rounded-[1.25rem] border border-[#ded2b5] bg-[#fffaf0] p-3 text-right shadow-sm sm:p-4`} data-testid={`card-product-${product.id}`}>
       <div className={`product-art relative mb-4 flex h-28 items-center justify-center overflow-hidden rounded-xl ${product.accent === 'honey' ? 'bg-[#f9dda0]' : product.accent === 'grain' ? 'bg-[#ead4a2]' : product.accent === 'dairy' ? 'bg-[#d7e3d3]' : product.accent === 'sesame' ? 'bg-[#dec4a0]' : 'bg-[#e4c9b7]'}`}>
         <div className="absolute -right-5 -top-8 h-24 w-24 rounded-full bg-[#fffaf0]/40" />
-        <div className="relative grid h-16 w-16 place-items-center rounded-[1.35rem] border-2 border-[#174d45] bg-[#fffaf0]/80 text-[#174d45] shadow-[4px_4px_0_#174d45]">
+        <div className="relative grid h-16 w-16 place-items-center rounded-[1.35rem] border-2 border-[#174d45] bg-[#fffaf0]/80 text-[#174d45] shadow-[4px_4px_0_#174d45] transition-transform duration-300 group-hover:-translate-y-1 group-hover:rotate-3">
           <Icon size={29} strokeWidth={1.8} />
         </div>
         {isDiscounted && <span className="absolute right-2 top-2 rounded-full bg-[#b8543d] px-2 py-1 text-[.59rem] font-extrabold text-[#fffaf0]">خصم ٥ ج</span>}
       </div>
-      <div className="min-h-[78px]">
+      <div className="min-h-[92px]">
         <h3 className="text-sm font-extrabold leading-6 text-[#174d45]" data-testid={`text-product-name-${product.id}`}>{product.name}</h3>
-        <p className="mt-1 text-xs font-semibold text-[#8b9481]" data-testid={`text-product-size-${product.id}`}>{product.size}</p>
+        <p className="mt-2 text-xs font-semibold text-[#8b9481]" data-testid={`text-product-size-${product.id}`}>{product.variants.length === 1 ? product.variants[0].size : `${product.variants.length} أحجام متاحة`}</p>
       </div>
-      <div className="mt-3 flex items-end justify-between gap-2">
+      <div className="mt-3 flex items-center justify-between gap-2 border-t border-[#eadfc7] pt-3">
         <div>
-          {currentPrice === null ? <span className="text-[.7rem] font-extrabold text-[#b8543d]" data-testid={`text-product-inquiry-${product.id}`}>السعر عند الطلب</span> : (
-            <div className="flex flex-col leading-none">
-              {isDiscounted && <del className="mb-1 text-[.65rem] font-bold text-[#9e9a87]">{formatPrice(product.price as number)}</del>}
-              <span className="text-base font-extrabold text-[#174d45]" data-testid={`text-product-price-${product.id}`}>{formatPrice(currentPrice)}</span>
-            </div>
+          {lowestPrice === null ? <span className="text-[.7rem] font-extrabold text-[#b8543d]" data-testid={`text-product-inquiry-${product.id}`}>السعر عند الطلب</span> : (
+            <span className="text-sm font-extrabold text-[#174d45]" data-testid={`text-product-price-${product.id}`}>يبدأ من {formatPrice(lowestPrice)}</span>
           )}
         </div>
-        <button onClick={onAdd} aria-label={`${product.name} ${product.size} ${currentPrice === null ? 'للاستفسار' : 'إضافة للسلة'}`} className={`grid h-9 w-9 shrink-0 place-items-center rounded-xl transition-all ${added ? 'bg-[#174d45] text-[#f4c842]' : 'bg-[#f4c842] text-[#174d45] hover:rotate-3 hover:bg-[#e9bd31]'}`} data-testid={`button-add-product-${product.id}`}>
-          {added ? <Check size={18} /> : <Plus size={19} strokeWidth={2.5} />}
-        </button>
+        <span className="flex items-center gap-1 text-xs font-extrabold text-[#b8543d]">التفاصيل <ChevronRight size={15} /></span>
       </div>
-    </article>
+    </button>
+  );
+}
+
+function ProductDetails({ product, addedId, cartCount, onBack, onAdd, onOpenCart }: {
+  product: Product;
+  addedId: string | null;
+  cartCount: number;
+  onBack: () => void;
+  onAdd: (product: Product, variant: Variant) => void;
+  onOpenCart: () => void;
+}) {
+  const Icon = product.icon;
+  const isHoneyOffer = product.variants.some((variant) => variant.discountEligible);
+  return (
+    <div className="min-h-[100dvh]">
+      <div className="bg-[#174d45] px-4 py-2 text-center text-xs font-bold tracking-wide text-[#f9dc77]">
+        خصم 5 جنيه على منتجات عسل النحل لفترة محدودة
+      </div>
+      <header className="store-shell flex items-center justify-between gap-4 py-5">
+        <button type="button" onClick={onBack} className="flex items-center gap-2 rounded-full border border-[#d9c99d] bg-[#fffaf0] px-4 py-2.5 text-sm font-extrabold text-[#174d45] shadow-sm transition-transform hover:-translate-y-0.5" aria-label="العودة إلى المنتجات">
+          <ChevronRight size={18} /> كل المنتجات
+        </button>
+        <div className="flex items-center gap-3">
+          <button type="button" onClick={onOpenCart} className="relative flex h-11 items-center gap-2 rounded-full border border-[#d9c99d] bg-[#fffaf0] px-3 text-sm font-extrabold text-[#174d45] shadow-sm transition-transform hover:-translate-y-0.5" aria-label="فتح سلة المشتريات" data-testid="button-open-cart-details">
+            <ShoppingBag size={18} /><span className="hidden sm:inline">السلة</span>{cartCount > 0 && <span className="grid min-h-6 min-w-6 place-items-center rounded-full bg-[#b8543d] px-1 text-xs text-[#fffaf0]">{money.format(cartCount)}</span>}
+          </button>
+          <span className="grid h-11 w-11 place-items-center rounded-[1.1rem] bg-[#f4c842] text-[#174d45] shadow-[4px_4px_0_#174d45]"><ShoppingBag size={22} /></span>
+          <span className="hidden sm:block"><span className="font-display block text-[1.2rem] font-extrabold leading-none text-[#174d45]">خيرها</span><span className="mt-1 block text-[.62rem] font-bold tracking-[.13em] text-[#997840]">مونة البيت المصرية</span></span>
+        </div>
+      </header>
+      <section className="store-shell pb-16 pt-5 lg:pb-24 lg:pt-10">
+        <div className="mb-6 flex items-center gap-2 text-xs font-extrabold text-[#b8543d]"><button type="button" onClick={onBack} className="hover:underline">المنتجات</button><ChevronLeft size={14} /><span>{product.name}</span></div>
+        <div className="grid gap-8 lg:grid-cols-[.85fr_1.15fr] lg:items-start lg:gap-14">
+          <div className={`product-art relative flex min-h-[300px] items-center justify-center overflow-hidden rounded-[2rem] ${product.accent === 'honey' ? 'bg-[#f9dda0]' : product.accent === 'grain' ? 'bg-[#ead4a2]' : product.accent === 'dairy' ? 'bg-[#d7e3d3]' : product.accent === 'sesame' ? 'bg-[#dec4a0]' : 'bg-[#e4c9b7]'}`}>
+            <div className="absolute -right-12 -top-12 h-52 w-52 rounded-full bg-[#fffaf0]/50" />
+            <div className="relative grid h-36 w-36 place-items-center rounded-[2.5rem] border-4 border-[#174d45] bg-[#fffaf0]/85 text-[#174d45] shadow-[9px_9px_0_#174d45]"><Icon size={64} strokeWidth={1.3} /></div>
+            {isHoneyOffer && <span className="absolute right-5 top-5 rounded-full bg-[#b8543d] px-4 py-2 text-xs font-extrabold text-[#fffaf0]">خصم ٥ جنيه</span>}
+          </div>
+          <div>
+            <span className="inline-flex rounded-full bg-[#efe4c6] px-3 py-1.5 text-xs font-extrabold text-[#b8543d]">{product.category}</span>
+            <h1 className="font-display mt-4 text-3xl font-extrabold leading-[1.35] text-[#174d45] sm:text-5xl">{product.name}</h1>
+            <p className="mt-4 max-w-xl text-sm font-semibold leading-7 text-[#70877f]">اختار الحجم المناسب لك، وشوف السعر النهائي بعد الخصم إن وُجد، ثم أضفه إلى سلتك لإرسال الطلب على واتساب.</p>
+            <div className="mt-8 grid gap-3 sm:grid-cols-2">
+              {product.variants.map((variant) => {
+                const price = displayPrice(variant);
+                return <div key={variant.id} className="rounded-2xl border border-[#d9c99d] bg-[#fffaf0] p-4 shadow-sm">
+                  <div className="flex items-start justify-between gap-3">
+                    <div><p className="text-xs font-bold text-[#8b9481]">حجم العبوة</p><p className="mt-1 text-base font-extrabold text-[#174d45]">{variant.size}</p></div>
+                    {variant.discountEligible && <span className="rounded-full bg-[#f9dc77] px-2 py-1 text-[.62rem] font-extrabold text-[#174d45]">خصم ٥ ج</span>}
+                  </div>
+                  <div className="mt-4 flex items-end justify-between gap-3">
+                    {price === null ? <span className="text-sm font-extrabold text-[#b8543d]">السعر عند الطلب</span> : <div className="leading-none">{variant.discountEligible && <del className="mb-1 block text-xs font-bold text-[#9e9a87]">{formatPrice(variant.price as number)}</del>}<span className="text-lg font-extrabold text-[#174d45]">{formatPrice(price)}</span></div>}
+                    <button type="button" onClick={() => onAdd(product, variant)} className={`flex items-center gap-1.5 rounded-xl px-3 py-2 text-xs font-extrabold transition-all ${addedId === variant.id ? 'bg-[#174d45] text-[#f4c842]' : 'bg-[#f4c842] text-[#174d45] hover:-translate-y-0.5'}`} data-testid={`button-add-variant-${variant.id}`}>
+                      {addedId === variant.id ? <Check size={15} /> : <Plus size={15} />} {addedId === variant.id ? 'تمت الإضافة' : 'أضف للسلة'}
+                    </button>
+                  </div>
+                </div>;
+              })}
+            </div>
+            <div className="mt-7 rounded-2xl border border-[#ded2b5] bg-[#efe4c6]/60 p-4 text-sm font-semibold leading-7 text-[#58736d]">بعد اختيار الحجم والكمية، افتح السلة لإرسال طلبك كاملًا برسالة جاهزة إلى واتساب: <strong className="text-[#174d45]">01098277229</strong></div>
+          </div>
+        </div>
+      </section>
+    </div>
   );
 }
 
