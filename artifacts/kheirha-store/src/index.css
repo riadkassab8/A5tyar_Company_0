@@ -291,9 +291,16 @@
 .grain { position: relative; isolation: isolate; }
 .grain::after { content: ''; position: absolute; inset: 0; z-index: -1; pointer-events: none; opacity: .16; background-image: radial-gradient(hsl(42 50% 96% / .4) .7px, transparent .7px); background-size: 9px 9px; mix-blend-mode: soft-light; }
 .product-card { transition: transform .3s ease, box-shadow .3s ease, border-color .3s ease; }
-.product-card:hover { transform: translateY(-5px); box-shadow: 0 18px 30px -18px hsl(35 35% 22% / .42); border-color: hsl(var(--accent) / .7); }
+.product-card { position: relative; isolation: isolate; cursor: pointer; }
+.product-card::after { content: ''; position: absolute; width: 3.5rem; height: 3.5rem; left: -.9rem; bottom: 2.5rem; border-radius: 42% 58% 55% 45%; background: hsl(45 88% 78% / .3); z-index: -1; transform: rotate(-18deg); transition: transform .35s ease, opacity .35s ease; }
+.product-card:nth-child(3n) { transform: rotate(.45deg); }
+.product-card:nth-child(4n) { transform: rotate(-.6deg); }
+.product-card:hover { transform: translateY(-8px) rotate(0deg) scale(1.02); box-shadow: 0 22px 34px -18px hsl(35 35% 22% / .48); border-color: hsl(var(--accent) / .7); }
+.product-card:hover::after { transform: rotate(22deg) scale(1.22); opacity: .75; }
 .product-card .product-art { transition: transform .35s ease; }
 .product-card:hover .product-art { transform: scale(1.06) rotate(-2deg); }
+
+button, a, [role='button'] { cursor: pointer; }
 .no-scrollbar::-webkit-scrollbar { display: none; }
 .no-scrollbar { scrollbar-width: none; }
 button, a, input { -webkit-tap-highlight-color: transparent; }

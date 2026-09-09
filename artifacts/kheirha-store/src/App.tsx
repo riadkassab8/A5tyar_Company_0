@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import type { ComponentType } from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import {
@@ -24,6 +24,7 @@ import {
 import { ErrorBoundary } from '@/components/error-boundary';
 import { Toaster } from '@/components/ui/toaster';
 import { TooltipProvider } from '@/components/ui/tooltip';
+import { Router as WouterRouter, useLocation } from 'wouter';
 import pantryReference from '@assets/WhatsApp_Image_2026-09-09_at_7.28.33_PM_1788972019491.jpeg';
 import honeyReference from '@assets/image_1788972021911.png';
 
@@ -139,9 +140,11 @@ function App() {
   return (
     <QueryClientProvider client={new QueryClient()}>
       <TooltipProvider>
-        <ErrorBoundary>
-          <Storefront />
-        </ErrorBoundary>
+        <WouterRouter base={import.meta.env.BASE_URL.replace(/\/$/, '')}>
+          <ErrorBoundary>
+            <Storefront />
+          </ErrorBoundary>
+        </WouterRouter>
         <Toaster />
       </TooltipProvider>
     </QueryClientProvider>
@@ -149,11 +152,11 @@ function App() {
 }
 
 function Storefront() {
+  const [location, setLocation] = useLocation();
   const [activeCategory, setActiveCategory] = useState<(typeof categories)[number]>('الكل');
   const [search, setSearch] = useState('');
   const [cart, setCart] = useState<CartItem[]>([]);
   const [cartOpen, setCartOpen] = useState(false);
-  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [addedId, setAddedId] = useState<string | null>(null);
 
   const filteredProducts = useMemo(() => productData.filter((product) => {
@@ -210,35 +213,43 @@ function Storefront() {
     window.open(`${WHATSAPP_URL}?text=${encodeURIComponent(summary)}`, '_blank', 'noopener,noreferrer');
   };
 
-  const scrollToProducts = () => document.getElementById('products')?.scrollIntoView({ behavior: 'smooth' });
-  const openProduct = (product: Product) => {
-    setSelectedProduct(product);
-    setCartOpen(false);
-    window.scrollTo({ top: 0, behavior: 'auto' });
-  };
-  const closeProduct = () => {
-    setSelectedProduct(null);
+  const scrollToProducts = () => {
+    setLocation('/products');
     window.scrollTo({ top: 0, behavior: 'auto' });
   };
 
-  useEffect(() => {
-    if (selectedProduct) window.scrollTo({ top: 0, behavior: 'auto' });
-  }, [selectedProduct]);
-
-  if (selectedProduct) {
+  if (location === '/products' || location.startsWith('/products/')) {
+    const detailId = location.startsWith('/products/') ? location.split('/')[2] : null;
+    const selectedProduct = detailId ? productData.find((product) => product.id === detailId) ?? null : null;
     return (
-      <main className="min-h-[100dvh] overflow-x-hidden">
-        <ProductDetails
-          product={selectedProduct}
-          addedId={addedId}
-          cartCount={cartCount}
-          onBack={closeProduct}
-          onAdd={addToCart}
-          onOpenCart={() => setCartOpen(true)}
-        />
-        {cartCount > 0 && <button onClick={() => setCartOpen(true)} className="fixed inset-x-4 bottom-4 z-30 flex items-center justify-between rounded-2xl bg-[#f4c842] px-5 py-3.5 text-sm font-extrabold text-[#174d45] shadow-[0_8px_25px_#174d4540] md:hidden" data-testid="button-mobile-cart"><span className="flex items-center gap-2"><ShoppingBag size={19} /> السلة ({money.format(cartCount)})</span><span>{formatPrice(subtotal)} <ArrowLeft className="mr-1 inline" size={16} /></span></button>}
-        {cartOpen && <CartDrawer cart={cart} subtotal={subtotal} inquiryCount={inquiryCount} onClose={() => setCartOpen(false)} onUpdate={updateQuantity} onRemove={removeFromCart} onCheckout={checkout} />}
-      </main>
+      <ProductsPage
+        activeCategory={activeCategory}
+        setActiveCategory={setActiveCategory}
+        search={search}
+        setSearch={setSearch}
+        filteredProducts={filteredProducts}
+        selectedProduct={selectedProduct}
+        addedId={addedId}
+        cart={cart}
+        cartCount={cartCount}
+        cartOpen={cartOpen}
+        subtotal={subtotal}
+        inquiryCount={inquiryCount}
+        onOpenProduct={(product) => {
+          setLocation(`/products/${product.id}`);
+          window.scrollTo({ top: 0, behavior: 'auto' });
+        }}
+        onBack={() => {
+          setLocation('/products');
+          window.scrollTo({ top: 0, behavior: 'auto' });
+        }}
+        onAdd={addToCart}
+        onOpenCart={() => setCartOpen(true)}
+        onCloseCart={() => setCartOpen(false)}
+        onUpdate={updateQuantity}
+        onRemove={removeFromCart}
+        onCheckout={checkout}
+      />
     );
   }
 
@@ -249,7 +260,7 @@ function Storefront() {
       </div>
 
       <header className="store-shell relative z-20 flex items-center justify-between gap-4 py-5" data-testid="header-store">
-        <a href="#top" className="flex items-center gap-3" data-testid="link-brand">
+          <a href="/" className="flex items-center gap-3" data-testid="link-brand">
           <span className="grid h-12 w-12 place-items-center rounded-[1.25rem] bg-[#f4c842] text-[#174d45] shadow-[4px_4px_0_#174d45]">
             <ShoppingBag size={25} strokeWidth={2.4} />
           </span>
@@ -259,7 +270,7 @@ function Storefront() {
           </span>
         </a>
         <nav className="hidden items-center gap-8 text-sm font-bold text-[#315e56] md:flex" aria-label="التنقل الرئيسي">
-          <a href="#products" className="transition-colors hover:text-[#b8543d]" data-testid="link-products">المنتجات</a>
+           <a href="/products" className="transition-colors hover:text-[#b8543d]" data-testid="link-products">المنتجات</a>
           <a href="#our-story" className="transition-colors hover:text-[#b8543d]" data-testid="link-story">عن خيرها</a>
           <a href={WHATSAPP_URL} target="_blank" rel="noreferrer" className="flex items-center gap-2 transition-colors hover:text-[#b8543d]" data-testid="link-whatsapp">
             <MessageCircle size={17} />
@@ -330,38 +341,6 @@ function Storefront() {
         </div>
       </section>
 
-      <section id="products" className="store-shell scroll-mt-4 py-14 lg:py-20" aria-labelledby="products-title">
-        <div className="mb-8 flex flex-col justify-between gap-5 md:flex-row md:items-end">
-          <div>
-            <div className="mb-3 flex items-center gap-2 text-xs font-extrabold tracking-[.14em] text-[#b8543d]"><span className="h-px w-8 bg-[#b8543d]" /> اختار اللي ناقصك</div>
-            <h2 id="products-title" className="font-display text-3xl font-extrabold text-[#174d45] sm:text-4xl">من الرف لحد باب البيت</h2>
-            <p className="mt-2 text-sm font-semibold text-[#70877f]">أساسيات يومك، متقسمة عشان تلاقيها بسرعة.</p>
-          </div>
-          <label className="flex w-full items-center gap-2 rounded-full border border-[#d9c99d] bg-[#fffaf0] px-4 py-3 text-sm text-[#70877f] shadow-sm md:max-w-xs">
-            <Search size={18} aria-hidden="true" />
-            <input value={search} onChange={(event) => setSearch(event.target.value)} placeholder="ابحث عن منتج..." className="w-full bg-transparent font-semibold outline-none placeholder:text-[#a5aa9d]" aria-label="البحث في المنتجات" data-testid="input-product-search" />
-          </label>
-        </div>
-        <div className="no-scrollbar mb-9 flex gap-2 overflow-x-auto pb-2" role="tablist" aria-label="أقسام المنتجات">
-          {categories.map((category) => (
-            <button key={category} onClick={() => setActiveCategory(category)} role="tab" aria-selected={activeCategory === category} className={`whitespace-nowrap rounded-full border px-5 py-2.5 text-sm font-extrabold transition-all ${activeCategory === category ? 'border-[#174d45] bg-[#174d45] text-[#fffaf0] shadow-[3px_3px_0_#f4c842]' : 'border-[#d9c99d] bg-[#fffaf0] text-[#537169] hover:border-[#b8543d] hover:text-[#b8543d]'}`} data-testid={`tab-category-${category}`}>
-              {category}
-            </button>
-          ))}
-        </div>
-        {filteredProducts.length ? (
-          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 lg:grid-cols-4">
-            {filteredProducts.map((product, index) => <ProductCard key={product.id} product={product} index={index} onOpen={() => openProduct(product)} />)}
-          </div>
-        ) : (
-          <div className="rounded-3xl border border-dashed border-[#cbbd98] bg-[#fffaf0] px-6 py-16 text-center" data-testid="empty-product-search">
-            <Search size={30} className="mx-auto mb-4 text-[#b8543d]" />
-            <h3 className="font-display text-xl font-extrabold text-[#174d45]">مفيش منتج بالاسم ده</h3>
-            <p className="mt-2 text-sm font-semibold text-[#70877f]">جرب كلمة أبسط أو اختار قسم تاني.</p>
-          </div>
-        )}
-      </section>
-
       <section className="store-shell pb-14 lg:pb-20">
         <div className="grain relative overflow-hidden rounded-[2rem] bg-[#b8543d] px-6 py-10 text-[#fffaf0] shadow-[10px_10px_0_#f4c842] sm:px-12 sm:py-12 lg:flex lg:items-center lg:justify-between">
           <div className="relative z-10 max-w-xl">
@@ -413,6 +392,98 @@ function Storefront() {
       {cartCount > 0 && <button onClick={() => setCartOpen(true)} className="fixed inset-x-4 bottom-4 z-30 flex items-center justify-between rounded-2xl bg-[#f4c842] px-5 py-3.5 text-sm font-extrabold text-[#174d45] shadow-[0_8px_25px_#174d4540] md:hidden" data-testid="button-mobile-cart"><span className="flex items-center gap-2"><ShoppingBag size={19} /> السلة ({money.format(cartCount)})</span><span>{formatPrice(subtotal)} <ArrowLeft className="mr-1 inline" size={16} /></span></button>}
 
       {cartOpen && <CartDrawer cart={cart} subtotal={subtotal} inquiryCount={inquiryCount} onClose={() => setCartOpen(false)} onUpdate={updateQuantity} onRemove={removeFromCart} onCheckout={checkout} />}
+    </main>
+  );
+}
+
+function ProductsPage({ activeCategory, setActiveCategory, search, setSearch, filteredProducts, selectedProduct, addedId, cart, cartCount, cartOpen, subtotal, inquiryCount, onOpenProduct, onBack, onAdd, onOpenCart, onCloseCart, onUpdate, onRemove, onCheckout }: {
+  activeCategory: (typeof categories)[number];
+  setActiveCategory: (category: (typeof categories)[number]) => void;
+  search: string;
+  setSearch: (value: string) => void;
+  filteredProducts: Product[];
+  selectedProduct: Product | null;
+  addedId: string | null;
+  cart: CartItem[];
+  cartCount: number;
+  cartOpen: boolean;
+  subtotal: number;
+  inquiryCount: number;
+  onOpenProduct: (product: Product) => void;
+  onBack: () => void;
+  onAdd: (product: Product, variant: Variant) => void;
+  onOpenCart: () => void;
+  onCloseCart: () => void;
+  onUpdate: (id: string, amount: number) => void;
+  onRemove: (id: string) => void;
+  onCheckout: () => void;
+}) {
+  return (
+    <main className="min-h-[100dvh] overflow-x-hidden">
+      {selectedProduct ? (
+        <ProductDetails product={selectedProduct} addedId={addedId} cartCount={cartCount} onBack={onBack} onAdd={onAdd} onOpenCart={onOpenCart} />
+      ) : (
+        <>
+          <div className="bg-[#174d45] px-4 py-2 text-center text-xs font-bold tracking-wide text-[#f9dc77]" data-testid="promo-strip-products">
+            خصم 5 جنيه على منتجات عسل النحل لفترة محدودة
+          </div>
+          <header className="store-shell flex items-center justify-between gap-4 py-5" data-testid="header-products-page">
+            <a href="/" className="flex items-center gap-3" data-testid="link-products-brand">
+              <span className="grid h-12 w-12 place-items-center rounded-[1.25rem] bg-[#f4c842] text-[#174d45] shadow-[4px_4px_0_#174d45]"><ShoppingBag size={25} strokeWidth={2.4} /></span>
+              <span><span className="font-display block text-[1.35rem] font-extrabold leading-none text-[#174d45]">خيرها</span><span className="mt-1 block text-[.67rem] font-bold tracking-[.13em] text-[#997840]">مونة البيت المصرية</span></span>
+            </a>
+            <div className="flex items-center gap-3">
+              <a href="/" className="hidden text-sm font-extrabold text-[#537169] transition-colors hover:text-[#b8543d] sm:block">الرئيسية</a>
+              <button type="button" onClick={onOpenCart} className="relative flex h-11 items-center gap-2 rounded-full border border-[#d9c99d] bg-[#fffaf0] px-4 text-sm font-extrabold text-[#174d45] shadow-sm transition-transform hover:-translate-y-0.5" aria-label="فتح سلة المشتريات" data-testid="button-open-products-cart">
+                <ShoppingBag size={19} /><span className="hidden sm:inline">السلة</span>{cartCount > 0 && <span className="grid min-h-6 min-w-6 place-items-center rounded-full bg-[#b8543d] px-1 text-xs text-[#fffaf0]">{money.format(cartCount)}</span>}
+              </button>
+            </div>
+          </header>
+          <section id="products" className="store-shell scroll-mt-4 pb-14 pt-7 lg:pb-20 lg:pt-12" aria-labelledby="products-title">
+            <div className="mb-8 flex flex-col justify-between gap-5 md:flex-row md:items-end">
+              <div>
+                <div className="mb-3 flex items-center gap-2 text-xs font-extrabold tracking-[.14em] text-[#b8543d]"><span className="h-px w-8 bg-[#b8543d]" /> اختار اللي ناقصك</div>
+                <h1 id="products-title" className="font-display text-4xl font-extrabold text-[#174d45] sm:text-5xl">كل منتجات خيرها</h1>
+                <p className="mt-2 max-w-xl text-sm font-semibold leading-7 text-[#70877f]">كل منتج في بطاقة واحدة، اختار الحجم من صفحة التفاصيل وأضفه للسلة بسهولة.</p>
+              </div>
+              <label className="flex w-full items-center gap-2 rounded-full border border-[#d9c99d] bg-[#fffaf0] px-4 py-3 text-sm text-[#70877f] shadow-sm md:max-w-xs">
+                <Search size={18} aria-hidden="true" />
+                <input value={search} onChange={(event) => setSearch(event.target.value)} placeholder="ابحث عن منتج..." className="w-full bg-transparent font-semibold outline-none placeholder:text-[#a5aa9d]" aria-label="البحث في المنتجات" data-testid="input-product-search" />
+              </label>
+            </div>
+            <div className="no-scrollbar mb-9 flex gap-2 overflow-x-auto pb-2" role="tablist" aria-label="أقسام المنتجات">
+              {categories.map((category) => (
+                <button type="button" key={category} onClick={() => setActiveCategory(category)} role="tab" aria-selected={activeCategory === category} className={`whitespace-nowrap rounded-full border px-5 py-2.5 text-sm font-extrabold transition-all ${activeCategory === category ? 'border-[#174d45] bg-[#174d45] text-[#fffaf0] shadow-[3px_3px_0_#f4c842]' : 'border-[#d9c99d] bg-[#fffaf0] text-[#537169] hover:border-[#b8543d] hover:text-[#b8543d]'}`} data-testid={`tab-category-${category}`}>
+                  {category}
+                </button>
+              ))}
+            </div>
+            {filteredProducts.length ? (
+              <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 lg:grid-cols-4">
+                {filteredProducts.map((product, index) => <ProductCard key={product.id} product={product} index={index} onOpen={() => onOpenProduct(product)} />)}
+              </div>
+            ) : (
+              <div className="rounded-3xl border border-dashed border-[#cbbd98] bg-[#fffaf0] px-6 py-16 text-center" data-testid="empty-product-search">
+                <Search size={30} className="mx-auto mb-4 text-[#b8543d]" />
+                <h2 className="font-display text-xl font-extrabold text-[#174d45]">مفيش منتج بالاسم ده</h2>
+                <p className="mt-2 text-sm font-semibold text-[#70877f]">جرب كلمة أبسط أو اختار قسم تاني.</p>
+              </div>
+            )}
+          </section>
+          <section className="store-shell pb-14 lg:pb-20">
+            <div className="grain relative overflow-hidden rounded-[2rem] bg-[#b8543d] px-6 py-10 text-[#fffaf0] shadow-[10px_10px_0_#f4c842] sm:px-12 sm:py-12 lg:flex lg:items-center lg:justify-between">
+              <div className="relative z-10 max-w-xl"><div className="mb-4 flex items-center gap-2 text-xs font-extrabold tracking-[.12em] text-[#f9dc77]"><Clock3 size={15} /> عرض لفترة محدودة</div><h2 className="font-display text-3xl font-extrabold leading-tight sm:text-4xl">حلاوة العسل تزيد،<br />وسعرها يقل 5 جنيه.</h2><p className="mt-3 max-w-md text-sm font-semibold leading-7 text-[#ffe5cf]">الخصم مطبق على منتجات عسل النحل فقط. السعر الأصلي ظاهر لك جنب السعر بعد الخصم.</p></div>
+              <div className="relative z-10 mt-8 flex items-end gap-3 lg:mt-0" aria-hidden="true"><div className="h-28 w-20 rotate-[-8deg] rounded-t-2xl border-4 border-[#174d45] bg-[#f4c842] shadow-[6px_6px_0_#174d45]"><div className="mt-9 border-y-2 border-[#174d45] py-1 text-center text-[.55rem] font-extrabold text-[#174d45]">عسل</div></div><div className="h-40 w-28 rotate-[6deg] rounded-t-3xl border-4 border-[#174d45] bg-[#f7e8b5] shadow-[6px_6px_0_#174d45]"><div className="mt-14 border-y-2 border-[#174d45] py-2 text-center text-xs font-extrabold text-[#174d45]">خيرها</div></div><div className="absolute -right-5 -top-5 grid h-16 w-16 rotate-12 place-items-center rounded-full border-4 border-[#174d45] bg-[#f4c842] text-center text-[.65rem] font-extrabold leading-4 text-[#174d45]">خصم<br />٥ ج</div></div>
+            </div>
+          </section>
+          <footer className="bg-[#174d45] py-10 text-[#fffaf0]" data-testid="footer-products">
+            <div className="store-shell flex flex-col gap-8 sm:flex-row sm:items-end sm:justify-between"><div><div className="flex items-center gap-3"><span className="grid h-10 w-10 place-items-center rounded-xl bg-[#f4c842] text-[#174d45]"><ShoppingBag size={20} /></span><span className="font-display text-2xl font-extrabold">خيرها</span></div><p className="mt-3 max-w-xs text-sm font-semibold leading-6 text-[#bad0c5]">مونة البيت المصرية، بشكل أسهل وأقرب.</p></div><div className="flex flex-col items-start gap-3 text-sm font-bold sm:items-end"><span className="text-[#f9dc77]">للطلب والاستفسار</span><a href={WHATSAPP_URL} target="_blank" rel="noreferrer" className="flex items-center gap-2 text-lg transition-colors hover:text-[#f4c842]"><MessageCircle size={19} /> 01098277229</a></div></div>
+            <div className="store-shell mt-8 border-t border-[#4d776e] pt-5 text-xs font-semibold text-[#9bb9ae]">© خيرها — أسعار ومنتجات البيت بعناية.</div>
+          </footer>
+        </>
+      )}
+      {cartCount > 0 && <button type="button" onClick={onOpenCart} className="fixed inset-x-4 bottom-4 z-30 flex items-center justify-between rounded-2xl bg-[#f4c842] px-5 py-3.5 text-sm font-extrabold text-[#174d45] shadow-[0_8px_25px_#174d4540] md:hidden" data-testid="button-mobile-cart"><span className="flex items-center gap-2"><ShoppingBag size={19} /> السلة ({money.format(cartCount)})</span><span>{formatPrice(subtotal)} <ArrowLeft className="mr-1 inline" size={16} /></span></button>}
+      {cartOpen && <CartDrawer cart={cart} subtotal={subtotal} inquiryCount={inquiryCount} onClose={onCloseCart} onUpdate={onUpdate} onRemove={onRemove} onCheckout={onCheckout} />}
     </main>
   );
 }
