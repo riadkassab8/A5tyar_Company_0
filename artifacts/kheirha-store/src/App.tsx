@@ -1,8 +1,9 @@
-import { useMemo, useState } from 'react';
+import { useMemo, useState, useEffect } from 'react';
 import type { ComponentType } from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import {
   ArrowLeft,
+  ArrowUpRight,
   Check,
   ChevronLeft,
   ChevronRight,
@@ -12,15 +13,18 @@ import {
   FileText,
   Heart,
   Minus,
+  Package,
   PackageCheck,
   Plus,
   Search,
   ShoppingBag,
+  Sparkles,
   Trash2,
   Wheat,
   X,
   MessageCircle,
   Home,
+  Menu,
 } from 'lucide-react';
 import { ErrorBoundary } from '@/components/error-boundary';
 import { Toaster } from '@/components/ui/toaster';
@@ -150,12 +154,250 @@ function App() {
   );
 }
 
+function HeroCarousel({ onSelectCategory, onBrowse }: { onSelectCategory: (cat: Category) => void; onBrowse: () => void }) {
+  const [current, setCurrent] = useState(0);
+  const [isPaused, setIsPaused] = useState(false);
+
+  const slides = [
+    {
+      id: 'honey-offer',
+      badge: '🍯 عرض خاص لفترة محدودة',
+      title: 'حلاوة العسل تزيد،',
+      highlightTitle: 'وسعرها يقل 5 جنيه.',
+      desc: 'الخصم مطبق على جميع أنواع عسل النحل الطبيعي والنقي 100%. أطلب عسلك البلدي الآن واستفد من الخصم المباشر.',
+      ctaText: 'تصفح عسل النحل',
+      category: 'عسل النحل' as Category,
+      tagBg: 'bg-[#f4c842] text-[#174d45]',
+      cardBg: 'bg-gradient-to-br from-[#174d45] via-[#1e584f] to-[#123e37]',
+      accentBg: 'bg-[#b8543d]',
+      badgeText: 'خصم ٥ ج لكل عبوة',
+      badgeTitle: 'عسل نحل طبيعي',
+      icon: Droplets,
+    },
+    {
+      id: 'pantry-essentials',
+      badge: '🌾 مونة البيت المصرية',
+      title: 'أساسيات المطبخ،',
+      highlightTitle: 'على أصولها وبسعر عادل.',
+      desc: 'السكر، الدقيق، الأرز البقوليات والزيوت. مونتك كاملة جاهزة للطلب ونوصلها لك حتى باب البيت بسهولة.',
+      ctaText: 'تصفح أساسيات البيت',
+      category: 'أساسيات البيت' as Category,
+      tagBg: 'bg-[#efe4c6] text-[#174d45]',
+      cardBg: 'bg-gradient-to-br from-[#274c44] via-[#2e5950] to-[#1c3a33]',
+      accentBg: 'bg-[#f4c842]',
+      badgeText: 'أسعار واضحة ومحدثة',
+      badgeTitle: 'مونة البيت اليومية',
+      icon: Wheat,
+    },
+    {
+      id: 'dairy-ghee',
+      badge: '🧈 طعم بلدي أصيل',
+      title: 'سمن وزبد بلدي،',
+      highlightTitle: 'من خير طبيعتنا 100%.',
+      desc: 'سمن وبقري وجاموسي طبيعي خالص، طعم ورائحة الزبد البلدي التي تذكرك بطبخ البيت الأصيل.',
+      ctaText: 'تصفح منتجات الألبان',
+      category: 'منتجات الألبان' as Category,
+      tagBg: 'bg-[#f9dc77] text-[#174d45]',
+      tagColor: 'text-[#174d45]',
+      cardBg: 'bg-gradient-to-br from-[#2a4e47] via-[#174d45] to-[#113831]',
+      accentBg: 'bg-[#997840]',
+      badgeText: 'طبيعي 100%',
+      badgeTitle: 'سمن وزبد خيرها',
+      icon: PackageCheck,
+    },
+  ];
+
+  useEffect(() => {
+    if (isPaused) return;
+    const timer = setInterval(() => {
+      setCurrent((prev) => (prev + 1) % slides.length);
+    }, 4500);
+    return () => clearInterval(timer);
+  }, [isPaused, slides.length]);
+
+  const active = slides[current];
+  const Icon = active.icon;
+
+  return (
+    <section 
+      className="store-shell py-6" 
+      aria-label="عرض العروض الرئيسية"
+      onMouseEnter={() => setIsPaused(true)}
+      onMouseLeave={() => setIsPaused(false)}
+    >
+      <div className={`relative overflow-hidden rounded-[2.2rem] ${active.cardBg} p-6 text-[#fffaf0] shadow-[0_15px_40px_-15px_#174d4540] transition-all duration-700 sm:p-10 lg:p-12`}>
+        <div className="absolute -left-20 -top-20 h-72 w-72 rounded-full bg-[#ffffff]/10 blur-3xl" />
+        <div className="absolute -bottom-20 -right-20 h-72 w-72 rounded-full bg-[#f4c842]/10 blur-3xl" />
+
+        <div className="relative z-10 grid gap-8 lg:grid-cols-[1.1fr_.9fr] lg:items-center">
+          <div className="animate-float-in">
+            <span className={`inline-flex items-center gap-2 rounded-full px-4 py-1.5 text-xs font-extrabold shadow-sm ${active.tagBg}`}>
+              {active.badge}
+            </span>
+
+            <h1 className="font-display mt-5 text-3xl font-extrabold leading-[1.25] text-[#fffaf0] sm:text-5xl lg:text-6xl">
+              {active.title}
+              <br />
+              <span className="text-[#f4c842]">{active.highlightTitle}</span>
+            </h1>
+
+            <p className="mt-4 max-w-xl text-sm font-semibold leading-8 text-[#e3f0ec] sm:text-base">
+              {active.desc}
+            </p>
+
+            <div className="mt-8 flex flex-wrap items-center gap-4">
+              <button
+                type="button"
+                onClick={() => {
+                  onSelectCategory(active.category);
+                  onBrowse();
+                }}
+                className="group flex items-center gap-3 rounded-full bg-[#f4c842] px-6 py-3.5 text-sm font-extrabold text-[#174d45] shadow-[0_6px_0_#b88a0e] transition-all hover:-translate-y-1 hover:bg-[#fff0a3] active:translate-y-0.5 active:shadow-[0_2px_0_#b88a0e]"
+                data-testid="button-hero-carousel-cta"
+              >
+                {active.ctaText}
+                <ArrowLeft size={18} className="transition-transform group-hover:-translate-x-1" />
+              </button>
+
+              <a
+                href={WHATSAPP_URL}
+                target="_blank"
+                rel="noreferrer"
+                className="flex items-center gap-2 rounded-full border-2 border-[#fffaf0]/30 bg-[#fffaf0]/10 px-5 py-3.5 text-sm font-extrabold text-[#fffaf0] backdrop-blur-sm transition-all hover:bg-[#fffaf0]/20"
+                data-testid="button-hero-carousel-whatsapp"
+              >
+                <MessageCircle size={18} />
+                طلب مباشر عبر واتساب
+              </a>
+            </div>
+          </div>
+
+          <div className="relative flex items-center justify-center">
+            <div className="grain relative flex h-64 w-64 items-center justify-center overflow-hidden rounded-[2.5rem] border-4 border-[#fffaf0]/30 bg-[#fffaf0]/10 backdrop-blur-md shadow-2xl sm:h-72 sm:w-72">
+              <div className="relative z-10 flex flex-col items-center text-center p-6">
+                <div className={`mb-4 grid h-20 w-20 place-items-center rounded-3xl ${active.accentBg} text-[#fffaf0] shadow-lg`}>
+                  <Icon size={40} strokeWidth={2} />
+                </div>
+                <span className="font-display text-2xl font-extrabold text-[#fffaf0]">{active.badgeTitle}</span>
+                <span className="mt-1.5 rounded-full bg-[#fffaf0]/20 px-3 py-1 text-xs font-bold text-[#f9dc77]">{active.badgeText}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="relative z-10 mt-8 flex items-center justify-between border-t border-[#fffaf0]/15 pt-5">
+          <div className="flex items-center gap-2">
+            {slides.map((s, idx) => (
+              <button
+                key={s.id}
+                type="button"
+                onClick={() => setCurrent(idx)}
+                className={`h-2.5 rounded-full transition-all duration-300 ${idx === current ? 'w-8 bg-[#f4c842]' : 'w-2.5 bg-[#fffaf0]/30 hover:bg-[#fffaf0]/60'}`}
+                aria-label={`الانتقال للعرض ${idx + 1}`}
+              />
+            ))}
+          </div>
+
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={() => setCurrent((prev) => (prev - 1 + slides.length) % slides.length)}
+              className="grid h-10 w-10 place-items-center rounded-full border border-[#fffaf0]/25 bg-[#fffaf0]/10 text-[#fffaf0] backdrop-blur-sm transition-all hover:bg-[#fffaf0]/30"
+              aria-label="العرض السابق"
+            >
+              <ChevronRight size={20} />
+            </button>
+            <button
+              type="button"
+              onClick={() => setCurrent((prev) => (prev + 1) % slides.length)}
+              className="grid h-10 w-10 place-items-center rounded-full border border-[#fffaf0]/25 bg-[#fffaf0]/10 text-[#fffaf0] backdrop-blur-sm transition-all hover:bg-[#fffaf0]/30"
+              aria-label="العرض التالي"
+            >
+              <ChevronLeft size={20} />
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function MobileNavDrawer({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
+  if (!isOpen) return null;
+  return (
+    <div className="fixed inset-0 z-50 md:hidden" role="dialog" aria-modal="true" aria-labelledby="mobile-nav-title">
+      <div className="absolute inset-0 bg-[#174d45]/50 backdrop-blur-xs" onClick={onClose} />
+      <aside className="animate-float-in absolute right-0 top-0 bottom-0 flex w-[82%] max-w-xs flex-col border-l border-[#d9c99d] bg-[#fffaf0] p-6 shadow-2xl">
+        <div className="flex items-center justify-between border-b border-[#ded2b5] pb-4">
+          <div className="flex items-center gap-2.5">
+            <span className="grid h-10 w-10 place-items-center rounded-2xl bg-[#f4c842] text-[#174d45] shadow-[2px_2px_0_#174d45]">
+              <ShoppingBag size={21} strokeWidth={2.2} />
+            </span>
+            <span>
+              <span className="font-display block text-lg font-extrabold text-[#174d45]">خيرها</span>
+              <span className="block text-[.6rem] font-bold text-[#997840]">مونة البيت المصرية</span>
+            </span>
+          </div>
+          <button
+            type="button"
+            onClick={onClose}
+            className="grid h-9 w-9 place-items-center rounded-full border border-[#d9c99d] text-[#174d45] transition-colors hover:bg-[#efe4c6]"
+            aria-label="إغلاق القائمة"
+          >
+            <X size={19} />
+          </button>
+        </div>
+
+        <nav className="mt-6 flex flex-col gap-3">
+          <a
+            href="/"
+            onClick={onClose}
+            className="flex items-center gap-3 rounded-2xl bg-[#efe4c6]/60 px-4 py-3.5 text-sm font-extrabold text-[#174d45] transition-colors hover:bg-[#174d45] hover:text-[#fffaf0]"
+          >
+            <Home size={19} className="text-[#b8543d]" />
+            <span>الرئيسية</span>
+          </a>
+          <a
+            href="/products"
+            onClick={onClose}
+            className="flex items-center gap-3 rounded-2xl bg-[#efe4c6]/60 px-4 py-3.5 text-sm font-extrabold text-[#174d45] transition-colors hover:bg-[#174d45] hover:text-[#fffaf0]"
+          >
+            <ShoppingBag size={19} className="text-[#b8543d]" />
+            <span>منتجات خيرها</span>
+          </a>
+          <a
+            href="#our-story"
+            onClick={onClose}
+            className="flex items-center gap-3 rounded-2xl bg-[#efe4c6]/60 px-4 py-3.5 text-sm font-extrabold text-[#174d45] transition-colors hover:bg-[#174d45] hover:text-[#fffaf0]"
+          >
+            <FileText size={19} className="text-[#b8543d]" />
+            <span>عن خيرها</span>
+          </a>
+        </nav>
+
+        <div className="mt-auto border-t border-[#ded2b5] pt-5">
+          <a
+            href={WHATSAPP_URL}
+            target="_blank"
+            rel="noreferrer"
+            className="flex items-center justify-center gap-2 rounded-full bg-[#25D366] px-4 py-3.5 text-xs font-extrabold text-white shadow-md transition-transform hover:-translate-y-0.5"
+          >
+            <MessageCircle size={18} />
+            <span>تواصل مباشرة عبر واتساب</span>
+          </a>
+        </div>
+      </aside>
+    </div>
+  );
+}
+
 function Storefront() {
   const [location, setLocation] = useLocation();
   const [activeCategory, setActiveCategory] = useState<(typeof categories)[number]>('الكل');
   const [search, setSearch] = useState('');
   const [cart, setCart] = useState<CartItem[]>([]);
   const [cartOpen, setCartOpen] = useState(false);
+  const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const [addedId, setAddedId] = useState<string | null>(null);
 
   const filteredProducts = useMemo(() => productData.filter((product) => {
@@ -270,7 +512,7 @@ function Storefront() {
             </span>
           </a>
 
-          <nav className="flex items-center gap-2 rounded-full border border-[#ded2b5]/80 bg-[#efe4c6]/50 p-1.5" aria-label="التنقل الرئيسي">
+          <nav className="hidden md:flex items-center gap-2 rounded-full border border-[#ded2b5]/80 bg-[#efe4c6]/50 p-1.5" aria-label="التنقل الرئيسي">
             <a href="/" className="flex items-center gap-1.5 rounded-full px-5 py-2 text-sm font-extrabold text-[#174d45] transition-all hover:bg-[#174d45] hover:text-[#fffaf0]" data-testid="link-home">
               الرئيسية
             </a>
@@ -282,81 +524,33 @@ function Storefront() {
             </a>
           </nav>
 
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2.5 sm:gap-3">
             <button onClick={() => setCartOpen(true)} className="group relative flex h-11 items-center gap-2.5 rounded-full border-2 border-[#174d45] bg-[#fffaf0] px-4 py-2 text-sm font-extrabold text-[#174d45] shadow-[3px_3px_0_#174d45] transition-all hover:-translate-y-0.5 hover:shadow-[4px_4px_0_#174d45] active:translate-y-0 active:shadow-[1px_1px_0_#174d45]" aria-label="فتح سلة المشتريات" data-testid="button-open-cart">
               <ShoppingBag size={20} strokeWidth={2.2} />
               <span className="hidden sm:inline">السلة</span>
               {cartCount > 0 && <span className="grid min-h-5 min-w-5 place-items-center rounded-full bg-[#b8543d] px-1.5 text-xs font-bold text-[#fffaf0]" data-testid="text-cart-count">{money.format(cartCount)}</span>}
             </button>
+
+            <button
+              type="button"
+              onClick={() => setMobileNavOpen(true)}
+              className="grid h-11 w-11 place-items-center rounded-full border-2 border-[#174d45] bg-[#fffaf0] text-[#174d45] shadow-[3px_3px_0_#174d45] transition-transform hover:-translate-y-0.5 md:hidden"
+              aria-label="فتح قائمة الموبايل"
+              data-testid="button-open-mobile-menu"
+            >
+              <Menu size={21} />
+            </button>
           </div>
         </div>
       </header>
 
-      <section id="top" className="store-shell grid gap-8 pb-12 pt-5 lg:grid-cols-[1.04fr_.96fr] lg:items-center lg:gap-12 lg:pb-20 lg:pt-12" aria-labelledby="hero-title">
-        <div className="animate-float-in">
-          <div className="mb-5 flex items-center gap-2 text-xs font-extrabold uppercase tracking-[.13em] text-[#b8543d]">
-            <span className="h-2 w-2 rounded-full bg-[#b8543d]" />
-            من أختيار لبيتك
-          </div>
-          <h1 id="hero-title" className="font-display max-w-2xl text-[clamp(2.8rem,7vw,6.5rem)] font-extrabold leading-[1.12] tracking-[-.06em] text-[#174d45]">
-            مونة البيت،<br /><span className="text-[#b8543d]">على أصولها.</span>
-          </h1>
-          <p className="mt-6 max-w-lg text-base font-semibold leading-8 text-[#58736d] sm:text-lg">
-            أساسيات مختارة بعناية، عسل من خير أرضنا، وطعم يفتكر البيت. اطلب احتياجاتك بسهولة ونجهزها لك عبر واتساب.
-          </p>
-          <div className="mt-8 flex flex-wrap items-center gap-3">
-            <button onClick={scrollToProducts} className="group flex items-center gap-3 rounded-full bg-[#b8543d] px-6 py-3.5 text-sm font-extrabold text-[#fffaf0] shadow-[0_8px_0_#893e32] transition-all hover:-translate-y-1 hover:shadow-[0_10px_0_#893e32] active:translate-y-1 active:shadow-[0_4px_0_#893e32]" data-testid="button-browse-products">
-              تصفح المنتجات
-              <ArrowLeft size={18} className="transition-transform group-hover:-translate-x-1" />
-            </button>
-            <a href={WHATSAPP_URL} target="_blank" rel="noreferrer" className="flex items-center gap-2 rounded-full px-5 py-3.5 text-sm font-extrabold text-[#174d45] transition-colors hover:bg-[#eaddbb]" data-testid="link-hero-whatsapp">
-              <MessageCircle size={19} />
-              كلمنا على واتساب
-            </a>
-          </div>
-          <div className="mt-10 flex items-center gap-6 border-t border-[#ded2b5] pt-5 text-xs font-bold text-[#70877f]">
-            <span className="flex items-center gap-2"><Check size={15} className="text-[#b8543d]" /> أسعار واضحة</span>
-            <span className="flex items-center gap-2"><Check size={15} className="text-[#b8543d]" /> طلب مباشر</span>
-          </div>
-        </div>
-        <div className="relative min-h-[350px] animate-float-in delay-2 lg:min-h-[500px]">
-          <div className="absolute right-1 top-0 h-[75%] w-[75%] rounded-[45%_45%_22%_22%] bg-[#d99a4e] opacity-25 blur-2xl" />
-          <div className="grain absolute right-3 top-8 flex h-[88%] w-[78%] items-end justify-center overflow-hidden rounded-[46%_46%_18%_18%] bg-[#f4c842] shadow-[18px_24px_0_#174d45] sm:right-8">
-            <div className="absolute inset-x-10 top-8 h-16 rounded-full border-2 border-dashed border-[#fff3b1] opacity-70" />
-            <div className="absolute bottom-24 h-44 w-44 rounded-full border-[18px] border-[#fff6c7]/60" />
-            <div className="relative z-10 mb-12 rotate-[-5deg] rounded-2xl border-4 border-[#174d45] bg-[#fffaf0] px-6 py-7 text-center shadow-[8px_8px_0_#b8543d] sm:px-10">
-              <span className="block text-[.7rem] font-extrabold tracking-[.2em] text-[#b8543d]">أختيار</span>
-              <span className="font-display mt-2 block text-3xl font-extrabold text-[#174d45]">عسل نحل</span>
-              <span className="mt-2 block text-xs font-bold text-[#997840]">من خير الطبيعة</span>
-            </div>
-          </div>
-          <div className="absolute bottom-1 right-0 z-20 flex rotate-3 items-center gap-3 rounded-2xl bg-[#174d45] px-4 py-3 text-[#fffaf0] shadow-xl sm:right-8">
-            <Droplets size={22} className="text-[#f4c842]" />
-            <span className="text-xs font-bold leading-5">طعم يفتكر<br />البيت</span>
-          </div>
-        </div>
-      </section>
+      <HeroCarousel onSelectCategory={setActiveCategory} onBrowse={scrollToProducts} />
 
-      <section className="bg-[#174d45] py-5 text-[#fffaf0]" aria-label="مميزات أختيار">
+      <section className="bg-[#174d45] py-5 text-[#fffaf0]" aria-label="مميزات خيرها">
         <div className="store-shell grid gap-4 text-sm font-bold sm:grid-cols-3">
           <div className="flex items-center gap-3"><PackageCheck className="text-[#f4c842]" size={21} /><span>مونة مختارة للبيت</span></div>
           <div className="flex items-center gap-3"><Wheat className="text-[#f4c842]" size={21} /><span>قائمة أسعار واضحة ومحدثة</span></div>
           <div className="flex items-center gap-3"><MessageCircle className="text-[#f4c842]" size={21} /><span>اطلب مباشرة على واتساب</span></div>
-        </div>
-      </section>
-
-      <section className="store-shell pt-10 pb-14 lg:pt-14 lg:pb-20">
-        <div className="grain relative overflow-hidden rounded-[2rem] bg-[#b8543d] px-6 py-10 text-[#fffaf0] shadow-[10px_10px_0_#f4c842] sm:px-12 sm:py-12 lg:flex lg:items-center lg:justify-between">
-          <div className="relative z-10 max-w-xl">
-            <div className="mb-4 flex items-center gap-2 text-xs font-extrabold tracking-[.12em] text-[#f9dc77]"><Clock3 size={15} /> عرض لفترة محدودة</div>
-            <h2 className="font-display text-3xl font-extrabold leading-tight sm:text-4xl">حلاوة العسل تزيد،<br />وسعرها يقل 5 جنيه.</h2>
-            <p className="mt-3 max-w-md text-sm font-semibold leading-7 text-[#ffe5cf]">الخصم مطبق على منتجات عسل النحل فقط. السعر الأصلي ظاهر لك جنب السعر بعد الخصم.</p>
-          </div>
-          <div className="relative z-10 mt-8 flex items-end gap-3 lg:mt-0" aria-hidden="true">
-            <div className="h-28 w-20 rotate-[-8deg] rounded-t-2xl border-4 border-[#174d45] bg-[#f4c842] shadow-[6px_6px_0_#174d45]"><div className="mt-9 border-y-2 border-[#174d45] py-1 text-center text-[.55rem] font-extrabold text-[#174d45]">عسل</div></div>
-            <div className="h-40 w-28 rotate-[6deg] rounded-t-3xl border-4 border-[#174d45] bg-[#f7e8b5] shadow-[6px_6px_0_#174d45]"><div className="mt-14 border-y-2 border-[#174d45] py-2 text-center text-xs font-extrabold text-[#174d45]">أختيار</div></div>
-            <div className="absolute -right-5 -top-5 grid h-16 w-16 rotate-12 place-items-center rounded-full border-4 border-[#174d45] bg-[#f4c842] text-center text-[.65rem] font-extrabold leading-4 text-[#174d45]">خصم<br />٥ ج</div>
-          </div>
         </div>
       </section>
 
@@ -368,7 +562,7 @@ function Storefront() {
               <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-[#f4c842] text-[#174d45] shadow-[3px_3px_0_#174d45]">
                 <ShoppingBag size={30} strokeWidth={2.2} />
               </div>
-              <span className="font-display text-2xl font-extrabold text-[#174d45]">منتجات أختيار الأصيلة</span>
+              <span className="font-display text-2xl font-extrabold text-[#174d45]">منتجات خيرها الأصيلة</span>
               <p className="mt-2 text-xs font-bold leading-6 text-[#70877f]">
                 جودة عالية وسعر عادل لكل منتجات المطبخ والعسل البلدي والألبان والمربيات.
               </p>
@@ -378,11 +572,11 @@ function Storefront() {
                 <span className="rounded-full bg-[#efe4c6] px-3 py-1 text-[.7rem] font-extrabold text-[#174d45]">مونة البيت</span>
               </div>
             </div>
-            <div className="absolute -bottom-4 -left-4 rounded-xl bg-[#f4c842] px-4 py-3 text-xs font-extrabold text-[#174d45] shadow-md">جودة وضمان أختيار</div>
+            <div className="absolute -bottom-4 -left-4 rounded-xl bg-[#f4c842] px-4 py-3 text-xs font-extrabold text-[#174d45] shadow-md">جودة وضمان خيرها</div>
           </div>
           <div>
             <div className="mb-4 flex items-center gap-2 text-xs font-extrabold tracking-[.14em] text-[#b8543d]"><FileText size={16} /> من قائمتنا إلى سلتك</div>
-            <h2 className="font-display max-w-xl text-3xl font-extrabold leading-[1.45] text-[#174d45] sm:text-4xl">أختيار، لأن المونة الحلوة تبدأ من <span className="text-[#b8543d]">اختيار صح.</span></h2>
+            <h2 className="font-display max-w-xl text-3xl font-extrabold leading-[1.45] text-[#174d45] sm:text-4xl">خيرها، لأن المونة الحلوة تبدأ من <span className="text-[#b8543d]">اختيار صح.</span></h2>
             <p className="mt-5 max-w-xl text-base font-semibold leading-8 text-[#58736d]">نحن نرتب لك احتياجات المطبخ كما تحبها: واضحة، معروفة، ومن غير لف كتير. شوف السعر، اختار الكمية، وابعت طلبك في رسالة واحدة.</p>
             <div className="mt-7 grid max-w-xl gap-4 sm:grid-cols-2">
               <div className="rounded-2xl border border-[#d5c49e] bg-[#fffaf0] p-4"><Wheat size={22} className="mb-3 text-[#b8543d]" /><h3 className="font-bold text-[#174d45]">مونة كل يوم</h3><p className="mt-1 text-xs font-semibold leading-5 text-[#70877f]">سكر، دقيق، رز، بقوليات وأكثر.</p></div>
@@ -395,7 +589,7 @@ function Storefront() {
       <footer className="bg-[#174d45] py-10 text-[#fffaf0]" data-testid="footer-store">
         <div className="store-shell flex flex-col gap-8 sm:flex-row sm:items-end sm:justify-between">
           <div>
-            <div className="flex items-center gap-3"><span className="grid h-10 w-10 place-items-center rounded-xl bg-[#f4c842] text-[#174d45]"><ShoppingBag size={20} /></span><span className="font-display text-2xl font-extrabold">أختيار</span></div>
+            <div className="flex items-center gap-3"><span className="grid h-10 w-10 place-items-center rounded-xl bg-[#f4c842] text-[#174d45]"><ShoppingBag size={20} /></span><span className="font-display text-2xl font-extrabold">خيرها</span></div>
             <p className="mt-3 max-w-xs text-sm font-semibold leading-6 text-[#bad0c5]">مونة البيت المصرية، بشكل أسهل وأقرب.</p>
           </div>
           <div className="flex flex-col items-start gap-3 text-sm font-bold sm:items-end">
@@ -403,7 +597,7 @@ function Storefront() {
             <a href={WHATSAPP_URL} target="_blank" rel="noreferrer" className="flex items-center gap-2 text-lg transition-colors hover:text-[#f4c842]" data-testid="link-footer-whatsapp"><MessageCircle size={19} /> 01100808082</a>
           </div>
         </div>
-        <div className="store-shell mt-8 border-t border-[#4d776e] pt-5 text-xs font-semibold text-[#9bb9ae]">© أختيار — أسعار ومنتجات البيت بعناية.</div>
+        <div className="store-shell mt-8 border-t border-[#4d776e] pt-5 text-xs font-semibold text-[#9bb9ae]">© خيرها — أسعار ومنتجات البيت بعناية.</div>
       </footer>
 
       {cartCount > 0 && <button onClick={() => setCartOpen(true)} className="fixed inset-x-4 bottom-4 z-30 flex items-center justify-between rounded-2xl bg-[#f4c842] px-5 py-3.5 text-sm font-extrabold text-[#174d45] shadow-[0_8px_25px_#174d4540] md:hidden" data-testid="button-mobile-cart"><span className="flex items-center gap-2"><ShoppingBag size={19} /> السلة ({money.format(cartCount)})</span><span>{formatPrice(subtotal)} <ArrowLeft className="mr-1 inline" size={16} /></span></button>}
@@ -435,6 +629,7 @@ function ProductsPage({ activeCategory, setActiveCategory, search, setSearch, fi
   onRemove: (id: string) => void;
   onCheckout: () => void;
 }) {
+  const [mobileNavOpen, setMobileNavOpen] = useState(false);
   return (
     <main className="min-h-[100dvh] overflow-x-hidden">
       {selectedProduct ? (
@@ -451,7 +646,7 @@ function ProductsPage({ activeCategory, setActiveCategory, search, setSearch, fi
                 <span><span className="font-display block text-[1.4rem] font-extrabold leading-none text-[#174d45]">خيرها</span><span className="mt-1 block text-[.68rem] font-bold tracking-[.13em] text-[#997840]">مونة البيت المصرية</span></span>
               </a>
 
-              <nav className="flex items-center gap-2 rounded-full border border-[#ded2b5]/80 bg-[#efe4c6]/50 p-1.5" aria-label="التنقل في صفحة المنتجات">
+              <nav className="hidden md:flex items-center gap-2 rounded-full border border-[#ded2b5]/80 bg-[#efe4c6]/50 p-1.5" aria-label="التنقل في صفحة المنتجات">
                 <a href="/" className="flex items-center gap-1.5 rounded-full px-5 py-2 text-sm font-extrabold text-[#174d45] transition-all hover:bg-[#174d45] hover:text-[#fffaf0]" data-testid="link-home-nav">
                   <Home size={16} className="text-[#b8543d]" />
                   الرئيسية
@@ -461,18 +656,31 @@ function ProductsPage({ activeCategory, setActiveCategory, search, setSearch, fi
                 </a>
               </nav>
 
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-2.5 sm:gap-3">
                 <button type="button" onClick={onOpenCart} className="group relative flex h-11 items-center gap-2.5 rounded-full border-2 border-[#174d45] bg-[#fffaf0] px-4 py-2 text-sm font-extrabold text-[#174d45] shadow-[3px_3px_0_#174d45] transition-all hover:-translate-y-0.5 hover:shadow-[4px_4px_0_#174d45] active:translate-y-0 active:shadow-[1px_1px_0_#174d45]" aria-label="فتح سلة المشتريات" data-testid="button-open-products-cart">
                   <ShoppingBag size={20} strokeWidth={2.2} /><span className="hidden sm:inline">السلة</span>{cartCount > 0 && <span className="grid min-h-5 min-w-5 place-items-center rounded-full bg-[#b8543d] px-1.5 text-xs font-bold text-[#fffaf0]">{money.format(cartCount)}</span>}
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setMobileNavOpen(true)}
+                  className="grid h-11 w-11 place-items-center rounded-full border-2 border-[#174d45] bg-[#fffaf0] text-[#174d45] shadow-[3px_3px_0_#174d45] transition-transform hover:-translate-y-0.5 md:hidden"
+                  aria-label="فتح قائمة الموبايل"
+                  data-testid="button-open-mobile-menu-products"
+                >
+                  <Menu size={21} />
                 </button>
               </div>
             </div>
           </header>
+
+          <MobileNavDrawer isOpen={mobileNavOpen} onClose={() => setMobileNavOpen(false)} />
+
           <section id="products" className="store-shell scroll-mt-4 pb-14 pt-7 lg:pb-20 lg:pt-12" aria-labelledby="products-title">
             <div className="mb-8 flex flex-col justify-between gap-5 md:flex-row md:items-end">
               <div>
                 <div className="mb-3 flex items-center gap-2 text-xs font-extrabold tracking-[.14em] text-[#b8543d]"><span className="h-px w-8 bg-[#b8543d]" /> اختار اللي ناقصك</div>
-                <h1 id="products-title" className="font-display text-4xl font-extrabold text-[#174d45] sm:text-5xl">كل منتجات أختيار</h1>
+                <h1 id="products-title" className="font-display text-4xl font-extrabold text-[#174d45] sm:text-5xl">كل منتجات خيرها</h1>
                 <p className="mt-2 max-w-xl text-sm font-semibold leading-7 text-[#70877f]">كل منتج في بطاقة واحدة، اختار الحجم من صفحة التفاصيل وأضفه للسلة بسهولة.</p>
               </div>
               <label className="flex w-full items-center gap-2 rounded-full border border-[#d9c99d] bg-[#fffaf0] px-4 py-3 text-sm text-[#70877f] shadow-sm md:max-w-xs">
@@ -480,7 +688,7 @@ function ProductsPage({ activeCategory, setActiveCategory, search, setSearch, fi
                 <input value={search} onChange={(event) => setSearch(event.target.value)} placeholder="ابحث عن منتج..." className="w-full bg-transparent font-semibold outline-none placeholder:text-[#a5aa9d]" aria-label="البحث في المنتجات" data-testid="input-product-search" />
               </label>
             </div>
-            <div className="sticky top-0 z-30 -mx-4 mb-9 flex gap-2 overflow-x-auto bg-[#fffaf0]/95 px-4 py-3.5 backdrop-blur-md border-y border-[#ded2b5]/60 shadow-sm no-scrollbar sm:mx-0 sm:rounded-2xl sm:border sm:px-4" role="tablist" aria-label="أقسام المنتجات">
+            <div className="sticky top-[61px] z-30 -mx-4 mb-9 flex gap-2 overflow-x-auto bg-[#fffaf0]/95 px-4 py-3.5 backdrop-blur-md border-y border-[#ded2b5]/60 shadow-sm no-scrollbar sm:mx-0 sm:rounded-2xl sm:border sm:px-4" role="tablist" aria-label="أقسام المنتجات">
               {categories.map((category) => (
                 <button type="button" key={category} onClick={() => setActiveCategory(category)} role="tab" aria-selected={activeCategory === category} className={`whitespace-nowrap rounded-full border px-5 py-2.5 text-sm font-extrabold transition-all ${activeCategory === category ? 'border-[#174d45] bg-[#174d45] text-[#fffaf0] shadow-[3px_3px_0_#f4c842]' : 'border-[#d9c99d] bg-[#fffaf0] text-[#537169] hover:border-[#b8543d] hover:text-[#b8543d]'}`} data-testid={`tab-category-${category}`}>
                   {category}
@@ -502,12 +710,12 @@ function ProductsPage({ activeCategory, setActiveCategory, search, setSearch, fi
           <section className="store-shell pt-10 pb-14 lg:pt-14 lg:pb-20">
             <div className="grain relative overflow-hidden rounded-[2rem] bg-[#b8543d] px-6 py-10 text-[#fffaf0] shadow-[10px_10px_0_#f4c842] sm:px-12 sm:py-12 lg:flex lg:items-center lg:justify-between">
               <div className="relative z-10 max-w-xl"><div className="mb-4 flex items-center gap-2 text-xs font-extrabold tracking-[.12em] text-[#f9dc77]"><Clock3 size={15} /> عرض لفترة محدودة</div><h2 className="font-display text-3xl font-extrabold leading-tight sm:text-4xl">حلاوة العسل تزيد،<br />وسعرها يقل 5 جنيه.</h2><p className="mt-3 max-w-md text-sm font-semibold leading-7 text-[#ffe5cf]">الخصم مطبق على منتجات عسل النحل فقط. السعر الأصلي ظاهر لك جنب السعر بعد الخصم.</p></div>
-              <div className="relative z-10 mt-8 flex items-end gap-3 lg:mt-0" aria-hidden="true"><div className="h-28 w-20 rotate-[-8deg] rounded-t-2xl border-4 border-[#174d45] bg-[#f4c842] shadow-[6px_6px_0_#174d45]"><div className="mt-9 border-y-2 border-[#174d45] py-1 text-center text-[.55rem] font-extrabold text-[#174d45]">عسل</div></div><div className="h-40 w-28 rotate-[6deg] rounded-t-3xl border-4 border-[#174d45] bg-[#f7e8b5] shadow-[6px_6px_0_#174d45]"><div className="mt-14 border-y-2 border-[#174d45] py-2 text-center text-xs font-extrabold text-[#174d45]">أختيار</div></div><div className="absolute -right-5 -top-5 grid h-16 w-16 rotate-12 place-items-center rounded-full border-4 border-[#174d45] bg-[#f4c842] text-center text-[.65rem] font-extrabold leading-4 text-[#174d45]">خصم<br />٥ ج</div></div>
+              <div className="relative z-10 mt-8 flex items-end gap-3 lg:mt-0" aria-hidden="true"><div className="h-28 w-20 rotate-[-8deg] rounded-t-2xl border-4 border-[#174d45] bg-[#f4c842] shadow-[6px_6px_0_#174d45]"><div className="mt-9 border-y-2 border-[#174d45] py-1 text-center text-[.55rem] font-extrabold text-[#174d45]">عسل</div></div><div className="h-40 w-28 rotate-[6deg] rounded-t-3xl border-4 border-[#174d45] bg-[#f7e8b5] shadow-[6px_6px_0_#174d45]"><div className="mt-14 border-y-2 border-[#174d45] py-2 text-center text-xs font-extrabold text-[#174d45]">خيرها</div></div><div className="absolute -right-5 -top-5 grid h-16 w-16 rotate-12 place-items-center rounded-full border-4 border-[#174d45] bg-[#f4c842] text-center text-[.65rem] font-extrabold leading-4 text-[#174d45]">خصم<br />٥ ج</div></div>
             </div>
           </section>
           <footer className="bg-[#174d45] py-10 text-[#fffaf0]" data-testid="footer-products">
-            <div className="store-shell flex flex-col gap-8 sm:flex-row sm:items-end sm:justify-between"><div><div className="flex items-center gap-3"><span className="grid h-10 w-10 place-items-center rounded-xl bg-[#f4c842] text-[#174d45]"><ShoppingBag size={20} /></span><span className="font-display text-2xl font-extrabold">أختيار</span></div><p className="mt-3 max-w-xs text-sm font-semibold leading-6 text-[#bad0c5]">مونة البيت المصرية، بشكل أسهل وأقرب.</p></div><div className="flex flex-col items-start gap-3 text-sm font-bold sm:items-end"><span className="text-[#f9dc77]">للطلب والاستفسار</span><a href={WHATSAPP_URL} target="_blank" rel="noreferrer" className="flex items-center gap-2 text-lg transition-colors hover:text-[#f4c842]"><MessageCircle size={19} /> 01100808082</a></div></div>
-            <div className="store-shell mt-8 border-t border-[#4d776e] pt-5 text-xs font-semibold text-[#9bb9ae]">© أختيار — أسعار ومنتجات البيت بعناية.</div>
+            <div className="store-shell flex flex-col gap-8 sm:flex-row sm:items-end sm:justify-between"><div><div className="flex items-center gap-3"><span className="grid h-10 w-10 place-items-center rounded-xl bg-[#f4c842] text-[#174d45]"><ShoppingBag size={20} /></span><span className="font-display text-2xl font-extrabold">خيرها</span></div><p className="mt-3 max-w-xs text-sm font-semibold leading-6 text-[#bad0c5]">مونة البيت المصرية، بشكل أسهل وأقرب.</p></div><div className="flex flex-col items-start gap-3 text-sm font-bold sm:items-end"><span className="text-[#f9dc77]">للطلب والاستفسار</span><a href={WHATSAPP_URL} target="_blank" rel="noreferrer" className="flex items-center gap-2 text-lg transition-colors hover:text-[#f4c842]"><MessageCircle size={19} /> 01100808082</a></div></div>
+            <div className="store-shell mt-8 border-t border-[#4d776e] pt-5 text-xs font-semibold text-[#9bb9ae]">© خيرها — أسعار ومنتجات البيت بعناية.</div>
           </footer>
         </>
       )}
