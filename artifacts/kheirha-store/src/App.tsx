@@ -1,0 +1,423 @@
+import { useMemo, useState } from 'react';
+import type { ComponentType } from 'react';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import {
+  ArrowLeft,
+  ArrowUpLeft,
+  Check,
+  ChevronDown,
+  ChevronLeft,
+  ChevronRight,
+  CircleHelp,
+  Clock3,
+  Droplets,
+  FileText,
+  Heart,
+  Minus,
+  PackageCheck,
+  Plus,
+  Search,
+  ShoppingBag,
+  Trash2,
+  Wheat,
+  X,
+  MessageCircle,
+} from 'lucide-react';
+import { ErrorBoundary } from '@/components/error-boundary';
+import { Toaster } from '@/components/ui/toaster';
+import { TooltipProvider } from '@/components/ui/tooltip';
+import pantryReference from '@assets/WhatsApp_Image_2026-09-09_at_7.28.33_PM_1788972019491.jpeg';
+import honeyReference from '@assets/image_1788972021911.png';
+
+type Category = 'أساسيات البيت' | 'عسل النحل' | 'منتجات الألبان' | 'منتجات السمسم' | 'المربيات';
+type Product = {
+  id: string;
+  name: string;
+  size: string;
+  price: number | null;
+  category: Category;
+  accent: string;
+  icon: ComponentType<{ size?: number; strokeWidth?: number }>;
+};
+type CartItem = Product & { quantity: number };
+type CatalogRow = readonly [string, string, number | null];
+
+const WHATSAPP_URL = 'https://wa.me/201098277229';
+const money = new Intl.NumberFormat('ar-EG');
+const categories = ['الكل', 'أساسيات البيت', 'عسل النحل', 'منتجات الألبان', 'منتجات السمسم', 'المربيات'] as const;
+
+const pantry: Omit<Product, 'accent' | 'icon'>[] = ([
+  ['سكر', '1 كيلو', 25], ['دقيق', '1 كيلو', 21], ['ارز ابيض عريض الحبة', '1 كيلو', 21],
+  ['ارز ابيض رفيع الحبة', '1 كيلو', 26], ['ارز ابيض رفيع الحبة', '3 كيلو', 75],
+  ['ارز ابيض رفيع الحبة', '5 كيلو', 125], ['زيت', '1 لتر', 70], ['زيت', '900 مل', 64],
+  ['زيت', '700 مل', 50], ['خل', '1 لتر', 12], ['فول بلدي', '1/2 كيلو', 25],
+  ['عدس اصفر', '1/2 كيلو', 25], ['عدس بجبة', '1/2 كيلو', 33], ['لوبيا', '1/2 كيلو', 28],
+  ['فاصوليا بيضاء', '1/2 كيلو', 30], ['ذرة فشار', '1/2 كيلو', 21], ['حمص الشام', '1/2 كيلو', 33],
+] as CatalogRow[]).map(([name, size, price], index) => ({ id: `pantry-${index}`, name, size, price, category: 'أساسيات البيت' }));
+
+const honey: Omit<Product, 'accent' | 'icon'>[] = ([
+  ['عسل نحل فوارة برسم', '500 جرام', 75], ['عسل نحل فوارة برسم', '1 كجم', 145],
+  ['عسل نحل زهرة موالح', '500 جرام', 100], ['عسل نحل زهرة موالح', '1 كجم', 190],
+  ['عسل نحل حبة البركة', '500 جرام', 95], ['عسل نحل حبة البركة', '1 كجم', 180],
+  ['عسل نحل حبة بردقوش', '500 جرام', 95], ['عسل نحل حبة بردقوش', '1 كجم', 180],
+  ['عسل نحل كافور', '500 جرام', 95], ['عسل نحل كافور', '1 كجم', 180],
+  ['عسل نحل سدر جبلي', '500 جرام', 200], ['عسل نحل سدر جبلي', '1 كجم', 380],
+  ['شمع عسل', '250 جرام', 63], ['شمع عسل', '500 جرام', 125], ['عسل اسود', '500 جرام', 35],
+  ['عسل اسود', '1 كجم', 65],
+] as CatalogRow[]).map(([name, size, price], index) => ({ id: `honey-${index}`, name, size, price, category: 'عسل النحل' }));
+
+const dairy: Omit<Product, 'accent' | 'icon'>[] = ([
+  ['زبادي بقري قشطة جاهزة', '1 كجم', 160], ['زبادي جاموسي قشطة جاهزة', '1 كجم', 180],
+  ['زبادي بقري خليط', '1 كجم', 205], ['زبادي جاموسي خليط', '1 كجم', 225],
+  ['زبادي بقري طبيعي', '1 كجم', 320], ['زبادي جاموسي طبيعي', '1 كجم', 340],
+  ['سمن بقري طبيعي', '550 جرام', 210], ['سمن جاموسي طبيعي', '1 كجم', 380],
+  ['سمن بقري طبيعي', '550 جرام', 220],
+] as CatalogRow[]).map(([name, size, price], index) => ({ id: `dairy-${index}`, name, size, price, category: 'منتجات الألبان' }));
+
+const sesame: Omit<Product, 'accent' | 'icon'>[] = ([
+  ['طحينة صافي', '900 جرام', 150], ['حلاوة بلدي سادة', '550 جرام', null], ['حلاوة بلدي فستق', '550 جرام', null],
+] as CatalogRow[]).map(([name, size, price], index) => ({ id: `sesame-${index}`, name, size, price, category: 'منتجات السمسم' }));
+
+const jams: Omit<Product, 'accent' | 'icon'>[] = ([
+  ['مربي فراولة سبريد', '1 كجم', null], ['مربي فراولة قطع', '1 كجم', null], ['مربي تين سبريد', '1 كجم', null],
+  ['مربي تين قطع', '1 كجم', null], ['مربي جزر مبشور', '1 كجم', null], ['مربي قرع مبشور', '1 كجم', null],
+  ['مربي تفاح', '1 كجم', null], ['مربي طماطم', '1 كجم', null], ['مربي كيكوات', '1 كجم', null],
+  ['مربي بلح', '1 كجم', null],
+ ] as CatalogRow[]).map(([name, size, price], index) => ({ id: `jam-${index}`, name, size, price, category: 'المربيات' }));
+
+const productData: Product[] = [...pantry, ...honey, ...dairy, ...sesame, ...jams].map((product) => ({
+  ...product,
+  accent: product.category === 'عسل النحل' ? 'honey' : product.category === 'أساسيات البيت' ? 'grain' : product.category === 'منتجات الألبان' ? 'dairy' : product.category === 'منتجات السمسم' ? 'sesame' : 'jam',
+  icon: product.category === 'عسل النحل' ? Droplets : product.category === 'أساسيات البيت' ? Wheat : product.category === 'منتجات الألبان' ? PackageCheck : product.category === 'منتجات السمسم' ? CircleHelp : Heart,
+}));
+
+const displayPrice = (product: Product) => product.price === null ? null : product.name.startsWith('عسل نحل') ? product.price - 5 : product.price;
+const formatPrice = (price: number) => `${money.format(price)} ج.م`;
+
+function App() {
+  return (
+    <QueryClientProvider client={new QueryClient()}>
+      <TooltipProvider>
+        <ErrorBoundary>
+          <Storefront />
+        </ErrorBoundary>
+        <Toaster />
+      </TooltipProvider>
+    </QueryClientProvider>
+  );
+}
+
+function Storefront() {
+  const [activeCategory, setActiveCategory] = useState<(typeof categories)[number]>('الكل');
+  const [search, setSearch] = useState('');
+  const [cart, setCart] = useState<CartItem[]>([]);
+  const [cartOpen, setCartOpen] = useState(false);
+  const [addedId, setAddedId] = useState<string | null>(null);
+
+  const filteredProducts = useMemo(() => productData.filter((product) => {
+    const inCategory = activeCategory === 'الكل' || product.category === activeCategory;
+    const searchMatch = `${product.name} ${product.size}`.includes(search.trim());
+    return inCategory && searchMatch;
+  }), [activeCategory, search]);
+
+  const cartCount = cart.reduce((sum, item) => sum + item.quantity, 0);
+  const subtotal = cart.reduce((sum, item) => sum + (displayPrice(item) ?? 0) * item.quantity, 0);
+  const inquiryCount = cart.filter((item) => item.price === null).reduce((sum, item) => sum + item.quantity, 0);
+
+  const addToCart = (product: Product) => {
+    setCart((current) => {
+      const found = current.find((item) => item.id === product.id);
+      return found
+        ? current.map((item) => item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item)
+        : [...current, { ...product, quantity: 1 }];
+    });
+    setAddedId(product.id);
+    window.setTimeout(() => setAddedId(null), 1100);
+  };
+
+  const updateQuantity = (id: string, amount: number) => setCart((current) => current.flatMap((item) => {
+    if (item.id !== id) return [item];
+    const quantity = item.quantity + amount;
+    return quantity > 0 ? [{ ...item, quantity }] : [];
+  }));
+
+  const removeFromCart = (id: string) => setCart((current) => current.filter((item) => item.id !== id));
+
+  const checkout = () => {
+    if (!cart.length) return;
+    const lines = cart.map((item) => {
+      const price = displayPrice(item);
+      return `- ${item.name} (${item.size}) × ${item.quantity}: ${price === null ? 'السعر عند الطلب' : formatPrice(price * item.quantity)}`;
+    });
+    const summary = [
+      'مرحباً خيرها، أريد تأكيد هذا الطلب:',
+      ...lines,
+      `الإجمالي: ${formatPrice(subtotal)}${inquiryCount ? ' + منتجات بسعر عند الطلب' : ''}`,
+      '',
+      'من فضلكم تواصلوا معي لتأكيد الطلب والتفاصيل.',
+    ].join('\n');
+    window.open(`${WHATSAPP_URL}?text=${encodeURIComponent(summary)}`, '_blank', 'noopener,noreferrer');
+  };
+
+  const scrollToProducts = () => document.getElementById('products')?.scrollIntoView({ behavior: 'smooth' });
+
+  return (
+    <main className="min-h-[100dvh] overflow-x-hidden">
+      <div className="bg-[#174d45] px-4 py-2 text-center text-xs font-bold tracking-wide text-[#f9dc77]" data-testid="promo-strip">
+        خصم 5 جنيه على منتجات عسل النحل لفترة محدودة
+      </div>
+
+      <header className="store-shell relative z-20 flex items-center justify-between gap-4 py-5" data-testid="header-store">
+        <a href="#top" className="flex items-center gap-3" data-testid="link-brand">
+          <span className="grid h-12 w-12 place-items-center rounded-[1.25rem] bg-[#f4c842] text-[#174d45] shadow-[4px_4px_0_#174d45]">
+            <ShoppingBag size={25} strokeWidth={2.4} />
+          </span>
+          <span>
+            <span className="font-display block text-[1.35rem] font-extrabold leading-none text-[#174d45]">خيرها</span>
+            <span className="mt-1 block text-[.67rem] font-bold tracking-[.13em] text-[#997840]">مونة البيت المصرية</span>
+          </span>
+        </a>
+        <nav className="hidden items-center gap-8 text-sm font-bold text-[#315e56] md:flex" aria-label="التنقل الرئيسي">
+          <a href="#products" className="transition-colors hover:text-[#b8543d]" data-testid="link-products">المنتجات</a>
+          <a href="#our-story" className="transition-colors hover:text-[#b8543d]" data-testid="link-story">عن خيرها</a>
+          <a href={WHATSAPP_URL} target="_blank" rel="noreferrer" className="flex items-center gap-2 transition-colors hover:text-[#b8543d]" data-testid="link-whatsapp">
+            <MessageCircle size={17} />
+            01098277229
+          </a>
+        </nav>
+        <button onClick={() => setCartOpen(true)} className="relative flex h-11 items-center gap-2 rounded-full border border-[#d9c99d] bg-[#fffaf0] px-4 text-sm font-extrabold text-[#174d45] shadow-sm transition-transform hover:-translate-y-0.5" aria-label="فتح سلة المشتريات" data-testid="button-open-cart">
+          <ShoppingBag size={19} />
+          <span className="hidden sm:inline">السلة</span>
+          {cartCount > 0 && <span className="grid min-h-6 min-w-6 place-items-center rounded-full bg-[#b8543d] px-1 text-xs text-[#fffaf0]" data-testid="text-cart-count">{money.format(cartCount)}</span>}
+        </button>
+      </header>
+
+      <section id="top" className="store-shell grid gap-8 pb-12 pt-5 lg:grid-cols-[1.04fr_.96fr] lg:items-center lg:gap-12 lg:pb-20 lg:pt-12" aria-labelledby="hero-title">
+        <div className="animate-float-in">
+          <div className="mb-5 flex items-center gap-2 text-xs font-extrabold uppercase tracking-[.13em] text-[#b8543d]">
+            <span className="h-2 w-2 rounded-full bg-[#b8543d]" />
+            من خيرها لبيتك
+          </div>
+          <h1 id="hero-title" className="font-display max-w-2xl text-[clamp(2.8rem,7vw,6.5rem)] font-extrabold leading-[1.12] tracking-[-.06em] text-[#174d45]">
+            مونة البيت،<br /><span className="text-[#b8543d]">على أصولها.</span>
+          </h1>
+          <p className="mt-6 max-w-lg text-base font-semibold leading-8 text-[#58736d] sm:text-lg">
+            أساسيات مختارة بعناية، عسل من خير أرضنا، وطعم يفتكر البيت. اطلب احتياجاتك بسهولة ونجهزها لك عبر واتساب.
+          </p>
+          <div className="mt-8 flex flex-wrap items-center gap-3">
+            <button onClick={scrollToProducts} className="group flex items-center gap-3 rounded-full bg-[#b8543d] px-6 py-3.5 text-sm font-extrabold text-[#fffaf0] shadow-[0_8px_0_#893e32] transition-all hover:-translate-y-1 hover:shadow-[0_10px_0_#893e32] active:translate-y-1 active:shadow-[0_4px_0_#893e32]" data-testid="button-browse-products">
+              تصفح المنتجات
+              <ArrowLeft size={18} className="transition-transform group-hover:-translate-x-1" />
+            </button>
+            <a href={WHATSAPP_URL} target="_blank" rel="noreferrer" className="flex items-center gap-2 rounded-full px-5 py-3.5 text-sm font-extrabold text-[#174d45] transition-colors hover:bg-[#eaddbb]" data-testid="link-hero-whatsapp">
+              <MessageCircle size={19} />
+              كلمنا على واتساب
+            </a>
+          </div>
+          <div className="mt-10 flex items-center gap-6 border-t border-[#ded2b5] pt-5 text-xs font-bold text-[#70877f]">
+            <span className="flex items-center gap-2"><Check size={15} className="text-[#b8543d]" /> أسعار واضحة</span>
+            <span className="flex items-center gap-2"><Check size={15} className="text-[#b8543d]" /> طلب مباشر</span>
+          </div>
+        </div>
+        <div className="relative min-h-[350px] animate-float-in delay-2 lg:min-h-[500px]">
+          <div className="absolute -left-3 top-6 z-10 w-36 -rotate-6 overflow-hidden rounded-xl border-[6px] border-[#fffaf0] bg-[#fffaf0] shadow-[0_20px_30px_-15px_#174d4566] sm:w-48 lg:left-2 lg:top-10">
+            <img src={honeyReference} alt="قائمة أسعار منتجات العسل والألبان من خيرها" className="h-56 w-full object-cover object-left sm:h-72 lg:h-80" data-testid="img-honey-reference" />
+            <span className="block bg-[#174d45] px-2 py-2 text-center text-[.62rem] font-bold text-[#f9dc77]">قائمة خيرها</span>
+          </div>
+          <div className="absolute right-1 top-0 h-[75%] w-[75%] rounded-[45%_45%_22%_22%] bg-[#d99a4e] opacity-25 blur-2xl" />
+          <div className="grain absolute right-3 top-8 flex h-[88%] w-[78%] items-end justify-center overflow-hidden rounded-[46%_46%_18%_18%] bg-[#f4c842] shadow-[18px_24px_0_#174d45] sm:right-8">
+            <div className="absolute inset-x-10 top-8 h-16 rounded-full border-2 border-dashed border-[#fff3b1] opacity-70" />
+            <div className="absolute bottom-24 h-44 w-44 rounded-full border-[18px] border-[#fff6c7]/60" />
+            <div className="relative z-10 mb-12 rotate-[-5deg] rounded-2xl border-4 border-[#174d45] bg-[#fffaf0] px-6 py-7 text-center shadow-[8px_8px_0_#b8543d] sm:px-10">
+              <span className="block text-[.7rem] font-extrabold tracking-[.2em] text-[#b8543d]">خيرها</span>
+              <span className="font-display mt-2 block text-3xl font-extrabold text-[#174d45]">عسل نحل</span>
+              <span className="mt-2 block text-xs font-bold text-[#997840]">من خير الطبيعة</span>
+            </div>
+          </div>
+          <div className="absolute bottom-1 right-0 z-20 flex rotate-3 items-center gap-3 rounded-2xl bg-[#174d45] px-4 py-3 text-[#fffaf0] shadow-xl sm:right-8">
+            <Droplets size={22} className="text-[#f4c842]" />
+            <span className="text-xs font-bold leading-5">طعم يفتكر<br />البيت</span>
+          </div>
+        </div>
+      </section>
+
+      <section className="bg-[#174d45] py-5 text-[#fffaf0]" aria-label="مميزات خيرها">
+        <div className="store-shell grid gap-4 text-sm font-bold sm:grid-cols-3">
+          <div className="flex items-center gap-3"><PackageCheck className="text-[#f4c842]" size={21} /><span>مونة مختارة للبيت</span></div>
+          <div className="flex items-center gap-3"><Wheat className="text-[#f4c842]" size={21} /><span>قائمة أسعار واضحة ومحدثة</span></div>
+          <div className="flex items-center gap-3"><MessageCircle className="text-[#f4c842]" size={21} /><span>اطلب مباشرة على واتساب</span></div>
+        </div>
+      </section>
+
+      <section id="products" className="store-shell scroll-mt-4 py-14 lg:py-20" aria-labelledby="products-title">
+        <div className="mb-8 flex flex-col justify-between gap-5 md:flex-row md:items-end">
+          <div>
+            <div className="mb-3 flex items-center gap-2 text-xs font-extrabold tracking-[.14em] text-[#b8543d]"><span className="h-px w-8 bg-[#b8543d]" /> اختار اللي ناقصك</div>
+            <h2 id="products-title" className="font-display text-3xl font-extrabold text-[#174d45] sm:text-4xl">من الرف لحد باب البيت</h2>
+            <p className="mt-2 text-sm font-semibold text-[#70877f]">أساسيات يومك، متقسمة عشان تلاقيها بسرعة.</p>
+          </div>
+          <label className="flex w-full items-center gap-2 rounded-full border border-[#d9c99d] bg-[#fffaf0] px-4 py-3 text-sm text-[#70877f] shadow-sm md:max-w-xs">
+            <Search size={18} aria-hidden="true" />
+            <input value={search} onChange={(event) => setSearch(event.target.value)} placeholder="ابحث عن منتج..." className="w-full bg-transparent font-semibold outline-none placeholder:text-[#a5aa9d]" aria-label="البحث في المنتجات" data-testid="input-product-search" />
+          </label>
+        </div>
+        <div className="no-scrollbar mb-9 flex gap-2 overflow-x-auto pb-2" role="tablist" aria-label="أقسام المنتجات">
+          {categories.map((category) => (
+            <button key={category} onClick={() => setActiveCategory(category)} role="tab" aria-selected={activeCategory === category} className={`whitespace-nowrap rounded-full border px-5 py-2.5 text-sm font-extrabold transition-all ${activeCategory === category ? 'border-[#174d45] bg-[#174d45] text-[#fffaf0] shadow-[3px_3px_0_#f4c842]' : 'border-[#d9c99d] bg-[#fffaf0] text-[#537169] hover:border-[#b8543d] hover:text-[#b8543d]'}`} data-testid={`tab-category-${category}`}>
+              {category}
+            </button>
+          ))}
+        </div>
+        {filteredProducts.length ? (
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 lg:grid-cols-4">
+            {filteredProducts.map((product, index) => <ProductCard key={product.id} product={product} index={index} added={addedId === product.id} onAdd={() => addToCart(product)} />)}
+          </div>
+        ) : (
+          <div className="rounded-3xl border border-dashed border-[#cbbd98] bg-[#fffaf0] px-6 py-16 text-center" data-testid="empty-product-search">
+            <Search size={30} className="mx-auto mb-4 text-[#b8543d]" />
+            <h3 className="font-display text-xl font-extrabold text-[#174d45]">مفيش منتج بالاسم ده</h3>
+            <p className="mt-2 text-sm font-semibold text-[#70877f]">جرب كلمة أبسط أو اختار قسم تاني.</p>
+          </div>
+        )}
+      </section>
+
+      <section className="store-shell pb-14 lg:pb-20">
+        <div className="grain relative overflow-hidden rounded-[2rem] bg-[#b8543d] px-6 py-10 text-[#fffaf0] shadow-[10px_10px_0_#f4c842] sm:px-12 sm:py-12 lg:flex lg:items-center lg:justify-between">
+          <div className="relative z-10 max-w-xl">
+            <div className="mb-4 flex items-center gap-2 text-xs font-extrabold tracking-[.12em] text-[#f9dc77]"><Clock3 size={15} /> عرض لفترة محدودة</div>
+            <h2 className="font-display text-3xl font-extrabold leading-tight sm:text-4xl">حلاوة العسل تزيد،<br />وسعرها يقل 5 جنيه.</h2>
+            <p className="mt-3 max-w-md text-sm font-semibold leading-7 text-[#ffe5cf]">الخصم مطبق على منتجات عسل النحل فقط. السعر الأصلي ظاهر لك جنب السعر بعد الخصم.</p>
+          </div>
+          <div className="relative z-10 mt-8 flex items-end gap-3 lg:mt-0" aria-hidden="true">
+            <div className="h-28 w-20 rotate-[-8deg] rounded-t-2xl border-4 border-[#174d45] bg-[#f4c842] shadow-[6px_6px_0_#174d45]"><div className="mt-9 border-y-2 border-[#174d45] py-1 text-center text-[.55rem] font-extrabold text-[#174d45]">عسل</div></div>
+            <div className="h-40 w-28 rotate-[6deg] rounded-t-3xl border-4 border-[#174d45] bg-[#f7e8b5] shadow-[6px_6px_0_#174d45]"><div className="mt-14 border-y-2 border-[#174d45] py-2 text-center text-xs font-extrabold text-[#174d45]">خيرها</div></div>
+            <div className="absolute -right-5 -top-5 grid h-16 w-16 rotate-12 place-items-center rounded-full border-4 border-[#174d45] bg-[#f4c842] text-center text-[.65rem] font-extrabold leading-4 text-[#174d45]">خصم<br />٥ ج</div>
+          </div>
+        </div>
+      </section>
+
+      <section id="our-story" className="border-y border-[#ded2b5] bg-[#efe4c6]/60 py-14 lg:py-20">
+        <div className="store-shell grid gap-10 lg:grid-cols-[.8fr_1.2fr] lg:items-center">
+          <div className="relative mx-auto w-full max-w-sm">
+            <div className="absolute -inset-3 rotate-3 rounded-[2rem] border-2 border-[#b8543d]/30" />
+            <img src={pantryReference} alt="قائمة أسعار أساسيات البيت من خيرها" className="relative h-80 w-full rounded-[1.5rem] object-cover object-top shadow-[8px_8px_0_#174d45] sm:h-96" data-testid="img-pantry-reference" />
+            <div className="absolute -bottom-4 -left-4 rounded-xl bg-[#f4c842] px-4 py-3 text-xs font-extrabold text-[#174d45] shadow-md">قائمة الأسعار الأصلية</div>
+          </div>
+          <div>
+            <div className="mb-4 flex items-center gap-2 text-xs font-extrabold tracking-[.14em] text-[#b8543d]"><FileText size={16} /> من قائمتنا إلى سلتك</div>
+            <h2 className="font-display max-w-xl text-3xl font-extrabold leading-[1.45] text-[#174d45] sm:text-4xl">خيرها، لأن المونة الحلوة تبدأ من <span className="text-[#b8543d]">اختيار صح.</span></h2>
+            <p className="mt-5 max-w-xl text-base font-semibold leading-8 text-[#58736d]">نحن نرتب لك احتياجات المطبخ كما تحبها: واضحة، معروفة، ومن غير لف كتير. شوف السعر، اختار الكمية، وابعت طلبك في رسالة واحدة.</p>
+            <div className="mt-7 grid max-w-xl gap-4 sm:grid-cols-2">
+              <div className="rounded-2xl border border-[#d5c49e] bg-[#fffaf0] p-4"><Wheat size={22} className="mb-3 text-[#b8543d]" /><h3 className="font-bold text-[#174d45]">مونة كل يوم</h3><p className="mt-1 text-xs font-semibold leading-5 text-[#70877f]">سكر، دقيق، رز، بقوليات وأكثر.</p></div>
+              <div className="rounded-2xl border border-[#d5c49e] bg-[#fffaf0] p-4"><MessageCircle size={22} className="mb-3 text-[#b8543d]" /><h3 className="font-bold text-[#174d45]">طلب من غير تعقيد</h3><p className="mt-1 text-xs font-semibold leading-5 text-[#70877f]">سلتك جاهزة في رسالة واتساب.</p></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <footer className="bg-[#174d45] py-10 text-[#fffaf0]" data-testid="footer-store">
+        <div className="store-shell flex flex-col gap-8 sm:flex-row sm:items-end sm:justify-between">
+          <div>
+            <div className="flex items-center gap-3"><span className="grid h-10 w-10 place-items-center rounded-xl bg-[#f4c842] text-[#174d45]"><ShoppingBag size={20} /></span><span className="font-display text-2xl font-extrabold">خيرها</span></div>
+            <p className="mt-3 max-w-xs text-sm font-semibold leading-6 text-[#bad0c5]">مونة البيت المصرية، بشكل أسهل وأقرب.</p>
+          </div>
+          <div className="flex flex-col items-start gap-3 text-sm font-bold sm:items-end">
+            <span className="text-[#f9dc77]">للطلب والاستفسار</span>
+            <a href={WHATSAPP_URL} target="_blank" rel="noreferrer" className="flex items-center gap-2 text-lg transition-colors hover:text-[#f4c842]" data-testid="link-footer-whatsapp"><MessageCircle size={19} /> 01098277229</a>
+          </div>
+        </div>
+        <div className="store-shell mt-8 border-t border-[#4d776e] pt-5 text-xs font-semibold text-[#9bb9ae]">© خيرها — أسعار ومنتجات البيت بعناية.</div>
+      </footer>
+
+      {cartCount > 0 && <button onClick={() => setCartOpen(true)} className="fixed inset-x-4 bottom-4 z-30 flex items-center justify-between rounded-2xl bg-[#f4c842] px-5 py-3.5 text-sm font-extrabold text-[#174d45] shadow-[0_8px_25px_#174d4540] md:hidden" data-testid="button-mobile-cart"><span className="flex items-center gap-2"><ShoppingBag size={19} /> السلة ({money.format(cartCount)})</span><span>{formatPrice(subtotal)} <ArrowLeft className="mr-1 inline" size={16} /></span></button>}
+
+      {cartOpen && <CartDrawer cart={cart} subtotal={subtotal} inquiryCount={inquiryCount} onClose={() => setCartOpen(false)} onUpdate={updateQuantity} onRemove={removeFromCart} onCheckout={checkout} />}
+    </main>
+  );
+}
+
+function ProductCard({ product, index, added, onAdd }: { product: Product; index: number; added: boolean; onAdd: () => void }) {
+  const Icon = product.icon;
+  const currentPrice = displayPrice(product);
+  const isDiscounted = product.name.startsWith('عسل نحل');
+  return (
+    <article className={`product-card animate-float-in delay-${Math.min((index % 3) + 1, 3)} overflow-hidden rounded-[1.25rem] border border-[#ded2b5] bg-[#fffaf0] p-3 shadow-sm sm:p-4`} data-testid={`card-product-${product.id}`}>
+      <div className={`product-art relative mb-4 flex h-28 items-center justify-center overflow-hidden rounded-xl ${product.accent === 'honey' ? 'bg-[#f9dda0]' : product.accent === 'grain' ? 'bg-[#ead4a2]' : product.accent === 'dairy' ? 'bg-[#d7e3d3]' : product.accent === 'sesame' ? 'bg-[#dec4a0]' : 'bg-[#e4c9b7]'}`}>
+        <div className="absolute -right-5 -top-8 h-24 w-24 rounded-full bg-[#fffaf0]/40" />
+        <div className="relative grid h-16 w-16 place-items-center rounded-[1.35rem] border-2 border-[#174d45] bg-[#fffaf0]/80 text-[#174d45] shadow-[4px_4px_0_#174d45]">
+          <Icon size={29} strokeWidth={1.8} />
+        </div>
+        {isDiscounted && <span className="absolute right-2 top-2 rounded-full bg-[#b8543d] px-2 py-1 text-[.59rem] font-extrabold text-[#fffaf0]">خصم ٥ ج</span>}
+      </div>
+      <div className="min-h-[78px]">
+        <h3 className="text-sm font-extrabold leading-6 text-[#174d45]" data-testid={`text-product-name-${product.id}`}>{product.name}</h3>
+        <p className="mt-1 text-xs font-semibold text-[#8b9481]" data-testid={`text-product-size-${product.id}`}>{product.size}</p>
+      </div>
+      <div className="mt-3 flex items-end justify-between gap-2">
+        <div>
+          {currentPrice === null ? <span className="text-[.7rem] font-extrabold text-[#b8543d]" data-testid={`text-product-inquiry-${product.id}`}>السعر عند الطلب</span> : (
+            <div className="flex flex-col leading-none">
+              {isDiscounted && <del className="mb-1 text-[.65rem] font-bold text-[#9e9a87]">{formatPrice(product.price as number)}</del>}
+              <span className="text-base font-extrabold text-[#174d45]" data-testid={`text-product-price-${product.id}`}>{formatPrice(currentPrice)}</span>
+            </div>
+          )}
+        </div>
+        <button onClick={onAdd} aria-label={`${product.name} ${product.size} ${currentPrice === null ? 'للاستفسار' : 'إضافة للسلة'}`} className={`grid h-9 w-9 shrink-0 place-items-center rounded-xl transition-all ${added ? 'bg-[#174d45] text-[#f4c842]' : 'bg-[#f4c842] text-[#174d45] hover:rotate-3 hover:bg-[#e9bd31]'}`} data-testid={`button-add-product-${product.id}`}>
+          {added ? <Check size={18} /> : <Plus size={19} strokeWidth={2.5} />}
+        </button>
+      </div>
+    </article>
+  );
+}
+
+function CartDrawer({ cart, subtotal, inquiryCount, onClose, onUpdate, onRemove, onCheckout }: { cart: CartItem[]; subtotal: number; inquiryCount: number; onClose: () => void; onUpdate: (id: string, amount: number) => void; onRemove: (id: string) => void; onCheckout: () => void }) {
+  return (
+    <div className="fixed inset-0 z-50" role="dialog" aria-modal="true" aria-labelledby="cart-title">
+      <button className="absolute inset-0 h-full w-full cursor-default bg-[#174d45]/45 backdrop-blur-[2px]" onClick={onClose} aria-label="إغلاق السلة" data-testid="button-close-cart-backdrop" />
+      <aside className="animate-float-in absolute bottom-0 right-0 top-0 flex w-full max-w-md flex-col border-l border-[#d9c99d] bg-[#fffaf0] shadow-2xl">
+        <header className="flex items-center justify-between border-b border-[#ded2b5] px-5 py-5">
+          <div><p className="text-xs font-bold text-[#b8543d]">طلبك الحالي</p><h2 id="cart-title" className="font-display mt-1 text-2xl font-extrabold text-[#174d45]">سلة خيرها</h2></div>
+          <button onClick={onClose} className="grid h-10 w-10 place-items-center rounded-full border border-[#d9c99d] text-[#174d45] transition-colors hover:bg-[#efe4c6]" aria-label="إغلاق السلة" data-testid="button-close-cart"><X size={20} /></button>
+        </header>
+        <div className="flex-1 overflow-y-auto px-5 py-5">
+          {cart.length === 0 ? (
+            <div className="flex h-full flex-col items-center justify-center text-center" data-testid="empty-cart">
+              <div className="mb-5 grid h-20 w-20 place-items-center rounded-3xl bg-[#efe4c6] text-[#b8543d]"><ShoppingBag size={34} strokeWidth={1.5} /></div>
+              <h3 className="font-display text-xl font-extrabold text-[#174d45]">السلة لسه فاضية</h3>
+              <p className="mt-2 max-w-[230px] text-sm font-semibold leading-6 text-[#70877f]">اختار مونة البيت اللي ناقصاك، وهتظهر هنا.</p>
+              <button onClick={onClose} className="mt-6 rounded-full bg-[#174d45] px-5 py-3 text-sm font-extrabold text-[#fffaf0]" data-testid="button-empty-cart-browse">ابدأ التسوق</button>
+            </div>
+          ) : (
+            <div className="space-y-3">
+              {cart.map((item) => {
+                const price = displayPrice(item);
+                return <div key={item.id} className="rounded-2xl border border-[#ded2b5] bg-[#fffdf7] p-3" data-testid={`row-cart-${item.id}`}>
+                  <div className="flex items-start justify-between gap-3">
+                    <div><h3 className="text-sm font-extrabold leading-6 text-[#174d45]">{item.name}</h3><p className="text-xs font-semibold text-[#8b9481]">{item.size}</p></div>
+                    <button onClick={() => onRemove(item.id)} className="text-[#a18d7c] transition-colors hover:text-[#b8543d]" aria-label={`حذف ${item.name}`} data-testid={`button-remove-cart-${item.id}`}><Trash2 size={17} /></button>
+                  </div>
+                  <div className="mt-3 flex items-center justify-between">
+                    <span className="text-sm font-extrabold text-[#174d45]">{price === null ? 'السعر عند الطلب' : formatPrice(price * item.quantity)}</span>
+                    <div className="flex items-center gap-2 rounded-full bg-[#efe4c6] p-1">
+                      <button onClick={() => onUpdate(item.id, 1)} className="grid h-7 w-7 place-items-center rounded-full bg-[#fffaf0] text-[#174d45] shadow-sm" aria-label="زيادة الكمية" data-testid={`button-increase-cart-${item.id}`}><Plus size={14} /></button>
+                      <span className="min-w-5 text-center text-xs font-extrabold text-[#174d45]" data-testid={`text-cart-quantity-${item.id}`}>{money.format(item.quantity)}</span>
+                      <button onClick={() => onUpdate(item.id, -1)} className="grid h-7 w-7 place-items-center rounded-full bg-[#fffaf0] text-[#174d45] shadow-sm" aria-label="تقليل الكمية" data-testid={`button-decrease-cart-${item.id}`}><Minus size={14} /></button>
+                    </div>
+                  </div>
+                </div>;
+              })}
+            </div>
+          )}
+        </div>
+        {cart.length > 0 && <footer className="border-t border-[#ded2b5] bg-[#f7efd9] px-5 py-5">
+          <div className="flex items-center justify-between text-sm font-bold text-[#70877f]"><span>المجموع الفرعي</span><strong className="text-lg text-[#174d45]" data-testid="text-cart-subtotal">{formatPrice(subtotal)}</strong></div>
+          {inquiryCount > 0 && <p className="mt-2 text-xs font-semibold leading-5 text-[#b8543d]">يوجد {money.format(inquiryCount)} منتج بسعر عند الطلب — نؤكده لك عبر واتساب.</p>}
+          <button onClick={onCheckout} className="mt-4 flex w-full items-center justify-center gap-2 rounded-xl bg-[#174d45] py-3.5 text-sm font-extrabold text-[#fffaf0] shadow-[0_5px_0_#0d302b] transition-all hover:-translate-y-0.5 active:translate-y-1 active:shadow-none" data-testid="button-checkout-whatsapp"><MessageCircle size={19} /> إتمام الطلب عبر واتساب</button>
+          <p className="mt-3 text-center text-[.68rem] font-semibold text-[#8b9481]">ستُفتح رسالة جاهزة بالتفاصيل على 01098277229</p>
+        </footer>}
+      </aside>
+    </div>
+  );
+}
+
+export default App;

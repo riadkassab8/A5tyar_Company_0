@@ -1,0 +1,28 @@
+kind = "web"
+previewPath = "/"
+title = "خيرها - متجر المنتجات"
+description = "متجر عربي احترافي لعرض منتجات خيرها الغذائية، مع خصم محدود على منتجات عسل النحل وسلة مشتريات وإرسال الطلب عبر واتساب."
+version = "1.0.0"
+id = "artifacts/kheirha-store"
+router = "path"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 20825
+
+[services.development]
+run = "pnpm --filter @workspace/kheirha-store run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/kheirha-store", "run", "build" ]
+serve = "static"
+publicDir = "artifacts/kheirha-store/dist/public"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "20825"
+BASE_PATH = "/"
