@@ -28,7 +28,7 @@ export function Footer({ setLocation }: FooterProps) {
 
   return (
     <footer
-      className="bg-[#0B4A3D] text-white border-t border-[#ffffff10]"
+      className="bg-[#564833] text-white border-t border-[#ffffff10]"
       data-testid="footer-store"
     >
       {/* ── Divider line gold ── */}
@@ -40,12 +40,12 @@ export function Footer({ setLocation }: FooterProps) {
         {/* Col 1 — Brand */}
         <div className="md:col-span-1">
           <div className="flex items-center gap-3 mb-4">
-            <div className="grid h-11 w-11 place-items-center rounded-2xl bg-white shadow-lg text-[#0B4A3D]">
-              <Leaf size={22} fill="#0B4A3D" stroke="none" />
+            <div className="grid h-11 w-11 place-items-center rounded-2xl bg-white shadow-lg text-[#564833]">
+              <Leaf size={22} fill="#564833" stroke="none" />
             </div>
             <span className="font-display text-3xl font-black tracking-tight">أختيار</span>
           </div>
-          <p className="text-xs leading-relaxed text-[#C2DFDB] max-w-[200px] mb-5">
+          <p className="text-xs leading-relaxed text-[#E8D5C8] max-w-[200px] mb-5">
             منتجات غذائية طبيعية مختارة بعناية من أفضل المزارع في قلب مصر.
           </p>
           {/* Gold accent bar */}
@@ -63,7 +63,7 @@ export function Footer({ setLocation }: FooterProps) {
                 <a
                   href={href}
                   onClick={(e) => handleNav(e, href)}
-                  className="group flex items-center gap-2 text-xs text-[#C2DFDB] hover:text-white transition-colors font-medium"
+                  className="group flex items-center gap-2 text-xs text-[#E8D5C8] hover:text-white transition-colors font-medium"
                 >
                   <ChevronLeft
                     size={13}
@@ -87,7 +87,7 @@ export function Footer({ setLocation }: FooterProps) {
                 <a
                   href="/products"
                   onClick={(e) => handleNav(e, '/products')}
-                  className="group flex items-center gap-2 text-xs text-[#C2DFDB] hover:text-white transition-colors font-medium"
+                  className="group flex items-center gap-2 text-xs text-[#E8D5C8] hover:text-white transition-colors font-medium"
                 >
                   <span className="h-1.5 w-1.5 rounded-full bg-[#E3B33C]/60 group-hover:bg-[#E3B33C] transition-colors flex-shrink-0" />
                   {cat}
@@ -104,7 +104,7 @@ export function Footer({ setLocation }: FooterProps) {
           </h4>
 
           {/* Working hours */}
-          <div className="flex items-center gap-2 text-xs text-[#C2DFDB] mb-4">
+          <div className="flex items-center gap-2 text-xs text-[#E8D5C8] mb-4">
             <Clock size={14} className="text-[#E3B33C] flex-shrink-0" />
             <span>متاح من ٩ صباحاً حتى ١٠ مساءً</span>
           </div>
@@ -137,10 +137,10 @@ export function Footer({ setLocation }: FooterProps) {
       {/* ── Bottom bar ── */}
       <div className="border-t border-[#ffffff10]">
         <div className="store-shell py-5 flex flex-col sm:flex-row items-center justify-between gap-2">
-          <p className="text-xs text-[#7AADA6]">
+          <p className="text-xs text-[#BFA899]">
             © {new Date().getFullYear()} أختيار — جميع الحقوق محفوظة
           </p>
-          <p className="text-xs text-[#7AADA6]">
+          <p className="text-xs text-[#BFA899]">
             صُنع بـ ❤️ في مصر
           </p>
         </div>

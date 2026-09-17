@@ -1,5 +1,5 @@
 import { Search } from 'lucide-react';
-import type { Category, Product, Variant } from '@/types/store';
+import type { CartItem, Category, Product, Variant } from '@/types/store';
 import { categories } from '@/types/store';
 import { ProductCard } from '@/components/products/ProductCard';
 
@@ -9,8 +9,10 @@ interface CatalogPageProps {
   search: string;
   setSearch: (val: string) => void;
   filteredProducts: Product[];
+  cart?: CartItem[];
   onOpenProduct: (p: Product) => void;
   onAdd: (p: Product, v: Variant) => void;
+  onUpdateQuantity?: (id: string, amount: number) => void;
   addedId?: string | null;
 }
 
@@ -20,14 +22,16 @@ export function CatalogPage({
   search,
   setSearch,
   filteredProducts,
+  cart,
   onOpenProduct,
   onAdd,
+  onUpdateQuantity,
   addedId,
 }: CatalogPageProps) {
   return (
     <main className="store-shell py-8 space-y-8">
       <div className="text-center sm:text-right">
-        <h1 className="font-display text-4xl sm:text-5xl font-black text-[#0B4A3D]">كل منتجات أختيار</h1>
+        <h1 className="font-display text-4xl sm:text-5xl font-black text-[#7B694D]">كل منتجات أختيار</h1>
         <p className="text-xs text-slate-500 font-medium mt-1">من أجود المزارع المصرية .. بجودة عالية وطعم أصيل</p>
       </div>
 
@@ -37,7 +41,7 @@ export function CatalogPage({
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           placeholder="ابحث عن منتج..."
-          className="w-full rounded-full border border-[#E5E2D8] bg-white py-3 pr-11 pl-4 text-xs font-semibold text-[#0B4A3D] outline-none focus:border-[#0B4A3D] shadow-2xs"
+          className="w-full rounded-full border border-[#E5E2D8] bg-white py-3 pr-11 pl-4 text-xs font-semibold text-[#7B694D] outline-none focus:border-[#7B694D] shadow-2xs"
         />
         <Search size={18} className="absolute right-4 top-3.5 text-slate-400" />
       </div>
@@ -50,8 +54,8 @@ export function CatalogPage({
             onClick={() => setActiveCategory(category)}
             className={`whitespace-nowrap rounded-full px-6 py-3 text-sm sm:text-base font-extrabold transition-all ${
               activeCategory === category
-                ? 'bg-[#0B4A3D] text-white shadow-md'
-                : 'bg-white text-slate-600 border-2 border-[#E5E2D8] hover:border-[#0B4A3D] hover:text-[#0B4A3D]'
+                ? 'bg-[#7B694D] text-white shadow-md'
+                : 'bg-white text-slate-600 border-2 border-[#E5E2D8] hover:border-[#7B694D] hover:text-[#7B694D]'
             }`}
           >
             {category}
@@ -62,7 +66,16 @@ export function CatalogPage({
       {/* Product Grid */}
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
         {filteredProducts.map((product, idx) => (
-          <ProductCard key={product.id} product={product} index={idx} addedId={addedId} onOpen={() => onOpenProduct(product)} onAdd={onAdd} />
+          <ProductCard
+            key={product.id}
+            product={product}
+            index={idx}
+            addedId={addedId}
+            cart={cart}
+            onOpen={() => onOpenProduct(product)}
+            onAdd={onAdd}
+            onUpdateQuantity={onUpdateQuantity}
+          />
         ))}
       </div>
     </main>

@@ -32,17 +32,17 @@ export function HomePage({
 
         <div className="relative z-10 grid gap-10 lg:grid-cols-2 lg:items-center">
           <div>
-            <span className="inline-flex items-center gap-2 rounded-full bg-white border border-[#E5E2D8] px-4 py-1.5 text-xs font-black text-[#0B4A3D] shadow-2xs">
+            <span className="inline-flex items-center gap-2 rounded-full bg-white border border-[#E5E2D8] px-4 py-1.5 text-xs font-black text-[#7B694D] shadow-2xs">
               <Sparkles size={14} className="text-[#E3B33C]" /> خير مصري أصيل 100%
             </span>
 
-            <h1 className="font-display mt-6 text-5xl sm:text-7xl lg:text-8xl font-black text-[#0B4A3D] leading-[1.04] tracking-tight">
+            <h1 className="font-display mt-6 text-5xl sm:text-7xl lg:text-8xl font-black text-[#7B694D] leading-[1.04] tracking-tight">
               اختيارك <br />
               <span className="text-[#D9A52E]">الطبيعي لأجود</span> <br />
               المنتجات.
             </h1>
 
-            <p className="mt-6 text-sm sm:text-base text-[#5C726F] font-medium leading-relaxed max-w-lg">
+            <p className="mt-6 text-sm sm:text-base text-slate-600 font-medium leading-relaxed max-w-lg">
               رزق وبركة .. من قلب الطبيعة والمزارع إلى مائدتك مباشرة، بجودة نضمنها لك.
             </p>
 
@@ -64,23 +64,19 @@ export function HomePage({
             </div>
           </div>
 
-          {/* Hero Product Photography */}
+          {/* Hero Photography */}
           <div className="relative flex justify-center">
             <div className="relative w-full max-w-sm aspect-[4/5] rounded-[2rem] overflow-hidden shadow-xl border border-[#E5E2D8] group">
               <img
-                src={featuredProduct?.imageUrl || PRODUCT_IMAGES['عسل نحل طبيعي']}
+                src={PRODUCT_IMAGES['عسل نحل نوارة برسيم']}
                 alt="منتجات أختيار الطبيعية"
                 className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
                 loading="lazy"
               />
               <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-black/60 to-transparent" />
-              <span className="absolute top-4 right-4 bg-[#E3B33C] text-[#0B4A3D] text-[0.62rem] font-black px-3 py-1 rounded-full shadow-md">
-                ⭐ خصم 10%
-              </span>
               <div className="absolute bottom-5 right-5 left-5 text-white">
-                <span className="block text-[0.65rem] font-bold text-amber-300">الأكثر مبيعاً هذا الأسبوع</span>
-                <span className="font-display font-black text-lg leading-tight">{featuredProduct?.name || 'عسل نحل طبيعي'}</span>
-                <span className="block text-sm font-black text-amber-300 mt-0.5">{formatPrice(featuredProduct ? (displayPrice(featuredProduct.variants[0]) as number) : 135)}</span>
+                <span className="block text-[0.65rem] font-bold text-amber-300">طبيعي وطازج 100%</span>
+                <span className="font-display font-black text-lg leading-tight">مونة البيت المصرية الأصيلة</span>
               </div>
             </div>
           </div>
@@ -89,71 +85,93 @@ export function HomePage({
 
       {/* 3 Benefits Bar */}
       <section className="grid gap-4 sm:grid-cols-3 text-center">
-        <div className="rounded-2xl border border-[#E5E2D8] bg-white p-6 shadow-2xs flex flex-col items-center hover:border-[#0B4A3D] transition-colors">
+        <div className="rounded-2xl border border-[#E5E2D8] bg-white p-6 shadow-2xs flex flex-col items-center hover:border-[#7B694D] transition-colors">
           <div className="mb-3 grid h-12 w-12 place-items-center rounded-2xl bg-[#F4F0E6] text-2xl">
             🌿
           </div>
-          <h4 className="font-extrabold text-base text-[#0B4A3D]">منتجات مختارة بعناية</h4>
+          <h4 className="font-extrabold text-base text-[#7B694D]">منتجات مختارة بعناية</h4>
           <p className="text-xs text-slate-500 font-medium mt-1">من أفضل المصادر والمزارع الطبيعية</p>
         </div>
-        <div className="rounded-2xl border border-[#E5E2D8] bg-white p-6 shadow-2xs flex flex-col items-center hover:border-[#0B4A3D] transition-colors">
+        <div className="rounded-2xl border border-[#E5E2D8] bg-white p-6 shadow-2xs flex flex-col items-center hover:border-[#7B694D] transition-colors">
           <div className="mb-3 grid h-12 w-12 place-items-center rounded-2xl bg-[#FEF3C7] text-2xl">
             🏷️
           </div>
-          <h4 className="font-extrabold text-base text-[#0B4A3D]">أسعار واضحة ومحددة</h4>
+          <h4 className="font-extrabold text-base text-[#7B694D]">أسعار واضحة ومحددة</h4>
           <p className="text-xs text-slate-500 font-medium mt-1">بدون أي مفاجآت عند التوصيل</p>
         </div>
         <div className="rounded-2xl border border-[#E5E2D8] bg-white p-6 shadow-2xs flex flex-col items-center">
-          <div className="mb-3 grid h-12 w-12 place-items-center rounded-2xl bg-[#F4F0E6] text-[#0B4A3D]">
+          <div className="mb-3 grid h-12 w-12 place-items-center rounded-2xl bg-[#F4F0E6] text-[#7B694D]">
             <MessageCircle size={24} />
           </div>
-          <h4 className="font-extrabold text-base text-[#0B4A3D]">اطلب مباشرة عبر واتساب</h4>
+          <h4 className="font-extrabold text-base text-[#7B694D]">اطلب مباشرة عبر واتساب</h4>
           <p className="text-xs text-slate-500 font-medium mt-1">بكل سهولة وسرعة وأمان</p>
         </div>
       </section>
 
-      {/* Featured Products Section */}
-      <section className="space-y-5">
-        <div className="flex items-center justify-between">
-          <div>
-            <h3 className="font-display font-black text-2xl text-[#0B4A3D]">منتجاتنا المميزة</h3>
-            <p className="text-xs text-slate-500 font-medium mt-0.5">مختارة بعناية يفضلها عملاؤنا</p>
-          </div>
-          <button onClick={onBrowse} className="text-xs font-black text-[#0B4A3D] hover:underline flex items-center gap-1">
-            عرض الكل <ArrowLeft size={13} />
-          </button>
-        </div>
+      {/* Family Ghee Offer Section - Ultra Compact Banner */}
+      <div className="max-w-4xl mx-auto my-4">
+        <section className="relative overflow-hidden rounded-2xl bg-[#F7F4E9] border border-[#E5E0D0] p-4 sm:p-5 shadow-xs">
+          <div className="flex flex-col sm:flex-row items-center gap-4 sm:gap-6 text-right">
+            {/* Left Image Thumbnail */}
+            <div className="w-full sm:w-44 md:w-52 h-36 sm:h-40 shrink-0 rounded-xl overflow-hidden border border-[#D9A52E]/60 bg-white shadow-2xs">
+              <img
+                src={PRODUCT_IMAGES['عرض باكدج السمن']}
+                alt="عرض باكدج الـ 3 سمن"
+                className="w-full h-full object-cover"
+              />
+            </div>
 
-        <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
-          {filteredProducts.slice(0, 4).map((product, idx) => (
-            <ProductCard
-              key={product.id}
-              product={product}
-              index={idx}
-              addedId={addedId}
-              onOpen={() => onOpenProduct(product)}
-              onAdd={onAdd}
-            />
-          ))}
-        </div>
-      </section>
+            {/* Right Copy & Action */}
+            <div className="flex-1 space-y-2.5">
+              <div className="flex items-center justify-between flex-wrap gap-2">
+                <span className="inline-flex items-center gap-1.5 rounded-full bg-[#7B694D] text-[#E3B33C] px-3 py-1 text-[0.7rem] font-bold">
+                  🔥 عرض محدود - خصم 5%
+                </span>
+                <span className="text-[0.7rem] font-bold text-[#8C6D58] bg-white px-2.5 py-1 rounded-lg border border-[#E5E0D0]">
+                  🍃 طبيعي 100%
+                </span>
+              </div>
+
+              <h3 className="font-display text-lg sm:text-2xl font-black text-[#7B694D] leading-tight">
+                ليه تشتري لنفسك زبدة أو سمنة بس؟
+              </h3>
+
+              <p className="text-xs sm:text-sm font-bold text-[#4A2E1B] leading-relaxed">
+                في حين إنك ممكن تشتري ليكي ولاتنين من عيلتك <span className="text-[#D9A52E] font-black">باكدج الـ 3 سمن</span> بخصم 5%!
+              </p>
+
+              <div className="pt-1">
+                <button
+                  type="button"
+                  onClick={() => onSelectCategory('منتجات الألبان')}
+                  className="uiverse-btn-primary bg-[#7B694D] text-white hover:bg-[#61523B] text-xs sm:text-sm px-5 py-2.5 rounded-xl border border-[#D9A52E] shadow-2xs"
+                >
+                  احصل على العرض واطلب الآن <ArrowLeft size={16} />
+                </button>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+
+
 
       {/* Weekly Offer Deal Section */}
       <section className="mt-10 mb-6">
-        <div className="relative rounded-[2.5rem] bg-[#0B4A3D] overflow-hidden border border-[#07382e] shadow-2xl group">
+        <div className="relative rounded-[2.5rem] bg-[#7B694D] overflow-hidden border border-[#61523B] shadow-2xl group">
           <div className="absolute top-0 right-0 w-64 h-64 bg-[#E3B33C]/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3"></div>
           <div className="absolute bottom-0 left-0 w-80 h-80 bg-white/5 rounded-full blur-3xl translate-y-1/3 -translate-x-1/3"></div>
           <div className="absolute inset-0 opacity-10" style={{ backgroundImage: 'radial-gradient(#E3B33C 1.5px, transparent 1.5px)', backgroundSize: '30px 30px' }}></div>
 
           <div className="relative z-10 p-8 sm:p-12 lg:p-16 flex flex-col lg:flex-row items-center gap-10 lg:gap-20">
             <div className="w-full lg:w-1/2 text-center lg:text-right space-y-6">
-              <div className="inline-flex items-center gap-2 rounded-full bg-[#E3B33C] px-4 py-1.5 text-xs font-black text-[#0B4A3D] shadow-lg animate-pulse">
+              <div className="inline-flex items-center gap-2 rounded-full bg-[#E3B33C] px-4 py-1.5 text-xs font-black text-[#7B694D] shadow-lg animate-pulse">
                 🔥 عرض الأسبوع المحدود
               </div>
               <h3 className="font-display text-4xl sm:text-5xl font-black text-white leading-tight">
                 خصم حصري على <span className="text-[#E3B33C]">تشكيلة العسل</span>
               </h3>
-              <p className="text-sm text-[#C2DFDB] font-medium leading-relaxed max-w-md mx-auto lg:mx-0">
+              <p className="text-sm text-[#FAF7F0] font-medium leading-relaxed max-w-md mx-auto lg:mx-0">
                 استمتع بطعم الطبيعة الأصلي مع عسل أختيار. احصل الآن على خصم 5 جنيهات على كل عبوة من جميع أنواع العسل لدينا لفترة محدودة.
               </p>
               
@@ -161,17 +179,17 @@ export function HomePage({
                 <div className="flex items-center gap-3 bg-black/20 backdrop-blur-md rounded-2xl p-4 border border-white/10">
                   <div className="text-center px-3">
                     <span className="block text-2xl font-black text-white">03</span>
-                    <span className="text-[0.65rem] text-[#C2DFDB] font-bold">أيام</span>
+                    <span className="text-[0.65rem] text-[#FAF7F0] font-bold">أيام</span>
                   </div>
                   <div className="text-2xl font-black text-[#E3B33C] mb-3">:</div>
                   <div className="text-center px-3">
                     <span className="block text-2xl font-black text-white">14</span>
-                    <span className="text-[0.65rem] text-[#C2DFDB] font-bold">ساعة</span>
+                    <span className="text-[0.65rem] text-[#FAF7F0] font-bold">ساعة</span>
                   </div>
                   <div className="text-2xl font-black text-[#E3B33C] mb-3">:</div>
                   <div className="text-center px-3">
                     <span className="block text-2xl font-black text-white">59</span>
-                    <span className="text-[0.65rem] text-[#C2DFDB] font-bold">دقيقة</span>
+                    <span className="text-[0.65rem] text-[#FAF7F0] font-bold">دقيقة</span>
                   </div>
                 </div>
               </div>
@@ -180,12 +198,12 @@ export function HomePage({
                 <button
                   type="button"
                   onClick={() => onSelectCategory('عسل النحل')}
-                  className="uiverse-btn-primary bg-[#E3B33C] text-[#0B4A3D] hover:bg-[#D9A52E] shadow-[0_0_20px_rgba(227,179,60,0.4)] border-none"
+                  className="uiverse-btn-primary bg-[#E3B33C] text-[#7B694D] hover:bg-[#D9A52E] shadow-[0_0_20px_rgba(227,179,60,0.4)] border-none"
                 >
                   <ArrowLeft size={18} /> تصفح تشكيلة العسل
                 </button>
                 <div className="flex flex-col text-right">
-                  <span className="text-sm font-bold text-slate-400/80">توفير</span>
+                  <span className="text-sm font-bold text-slate-200">توفير</span>
                   <span className="text-3xl font-black text-[#E3B33C]">-5 ج.م</span>
                 </div>
               </div>
@@ -213,8 +231,8 @@ export function HomePage({
                 transition={{ duration: 6, repeat: Infinity, ease: "easeInOut", delay: 2 }}
                 className="absolute left-1/2 -translate-x-1/2 bottom-0 w-40 sm:w-56 aspect-[4/5] rounded-[2rem] bg-white p-3 shadow-[0_30px_60px_rgba(0,0,0,0.4)] border-4 border-[#E3B33C] z-20 group-hover:scale-105 transition-transform duration-500"
               >
-                <img src={PRODUCT_IMAGES['عسل نحل طبيعي']} alt="عسل نحل" className="w-full h-full object-cover rounded-xl" />
-                <span className="absolute -top-4 -right-4 bg-[#E3B33C] text-[#0B4A3D] font-black text-xs px-3 py-2 rounded-full shadow-lg transform rotate-12">
+                <img src={PRODUCT_IMAGES['عسل نحل نوارة برسيم']} alt="عسل نحل" className="w-full h-full object-cover rounded-xl" />
+                <span className="absolute -top-4 -right-4 bg-[#E3B33C] text-[#7B694D] font-black text-xs px-3 py-2 rounded-full shadow-lg transform rotate-12">
                   طبيعي 💯
                 </span>
               </motion.div>

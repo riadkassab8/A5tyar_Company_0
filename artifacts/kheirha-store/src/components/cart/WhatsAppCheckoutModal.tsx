@@ -21,12 +21,12 @@ export function WhatsAppCheckoutModal({
       <div className="relative z-10 w-full max-w-md rounded-[2.5rem] bg-white p-7 shadow-2xl space-y-6 text-center">
         <button onClick={onClose} className="absolute left-5 top-5 text-slate-400 hover:text-slate-600"><X size={22} /></button>
 
-        <div className="grid h-18 w-18 place-items-center rounded-3xl bg-[#E8F8F5] text-[#25D366] mx-auto shadow-xs">
+        <div className="grid h-18 w-18 place-items-center rounded-3xl bg-[#F7EFE9] text-[#25D366] mx-auto shadow-xs">
           <MessageCircle size={36} />
         </div>
 
         <div>
-          <h3 className="font-display font-black text-2xl text-[#0B4A3D]">اطلب الآن عبر واتساب</h3>
+          <h3 className="font-display font-black text-2xl text-[#7B694D]">اطلب الآن عبر واتساب</h3>
           <p className="text-xs text-slate-500 font-medium mt-1.5">سيتم إرسال تفاصيل طلبك مباشرة إلى رقم الواتساب الخاص بنا</p>
         </div>
 
@@ -39,7 +39,7 @@ export function WhatsAppCheckoutModal({
 
         {/* Order Items Breakdown Box */}
         <div className="rounded-2xl border border-[#E5E2D8] bg-[#FAF8F2] p-5 text-right space-y-3">
-          <h4 className="font-black text-xs text-[#0B4A3D] border-b border-[#E5E2D8] pb-2.5">محتوى الطلب</h4>
+          <h4 className="font-black text-xs text-[#7B694D] border-b border-[#E5E2D8] pb-2.5">محتوى الطلب</h4>
           <div className="space-y-2.5 max-h-40 overflow-y-auto text-xs">
             {cart.map((item) => (
               <div key={item.id} className="flex justify-between items-center text-slate-700 font-bold">
@@ -48,14 +48,14 @@ export function WhatsAppCheckoutModal({
               </div>
             ))}
           </div>
-          <div className="pt-3 border-t border-[#E5E2D8] flex justify-between font-black text-sm text-[#0B4A3D]">
+          <div className="pt-3 border-t border-[#E5E2D8] flex justify-between font-black text-sm text-[#7B694D]">
             <span>الإجمالي:</span>
             <span>{formatPrice(subtotal)}</span>
           </div>
         </div>
 
         {/* Perks Bar */}
-        <div className="grid grid-cols-3 gap-2 text-center text-[0.68rem] font-extrabold text-[#0B4A3D] pt-2">
+        <div className="grid grid-cols-3 gap-2 text-center text-[0.68rem] font-extrabold text-[#7B694D] pt-2">
           <div className="rounded-xl bg-[#F4F0E6] p-2.5">توصيل سريع</div>
           <div className="rounded-xl bg-[#F4F0E6] p-2.5">دفع عند الاستلام</div>
           <div className="rounded-xl bg-[#F4F0E6] p-2.5">منتجات طبيعية</div>

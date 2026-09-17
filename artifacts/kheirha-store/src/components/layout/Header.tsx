@@ -36,13 +36,13 @@ export function Header({
 
           {/* Desktop Nav */}
           <nav className="hidden md:flex items-center gap-10 font-extrabold text-base lg:text-[1.05rem]">
-            <a href="/" onClick={(e) => { e.preventDefault(); setLocation('/'); }} className={`transition-colors ${location === '/' ? 'text-[#0B4A3D] font-black border-b-2 border-[#0B4A3D] pb-1' : 'text-slate-600 hover:text-[#0B4A3D]'}`}>
+            <a href="/" onClick={(e) => { e.preventDefault(); setLocation('/'); }} className={`transition-colors ${location === '/' ? 'text-[#7B694D] font-black border-b-2 border-[#7B694D] pb-1' : 'text-slate-600 hover:text-[#7B694D]'}`}>
               الرئيسية
             </a>
-            <a href="/products" onClick={(e) => { e.preventDefault(); setLocation('/products'); }} className={`transition-colors ${isProductsView ? 'text-[#0B4A3D] font-black border-b-2 border-[#0B4A3D] pb-1' : 'text-slate-600 hover:text-[#0B4A3D]'}`}>
+            <a href="/products" onClick={(e) => { e.preventDefault(); setLocation('/products'); }} className={`transition-colors ${isProductsView ? 'text-[#7B694D] font-black border-b-2 border-[#7B694D] pb-1' : 'text-slate-600 hover:text-[#7B694D]'}`}>
               المنتجات
             </a>
-            <a href="/about" onClick={(e) => { e.preventDefault(); setLocation('/about'); }} className={`transition-colors ${isAboutView ? 'text-[#0B4A3D] font-black border-b-2 border-[#0B4A3D] pb-1' : 'text-slate-600 hover:text-[#0B4A3D]'}`}>
+            <a href="/about" onClick={(e) => { e.preventDefault(); setLocation('/about'); }} className={`transition-colors ${isAboutView ? 'text-[#7B694D] font-black border-b-2 border-[#7B694D] pb-1' : 'text-slate-600 hover:text-[#7B694D]'}`}>
               عن أختيار
             </a>
           </nav>
@@ -67,7 +67,7 @@ export function Header({
             <button
               type="button"
               onClick={onOpenMobileMenu}
-              className="grid h-10 w-10 place-items-center rounded-xl border border-[#E5E2D8] bg-white text-[#0B4A3D] md:hidden"
+              className="grid h-10 w-10 place-items-center rounded-xl border border-[#E5E2D8] bg-white text-[#7B694D] md:hidden"
             >
               <Menu size={22} />
             </button>

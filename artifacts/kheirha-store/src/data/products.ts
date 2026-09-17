@@ -6,46 +6,45 @@ export const money = new Intl.NumberFormat('ar-EG');
 
 // Product Photography Map — all local images live in /products/ folder
 export const PRODUCT_IMAGES: Record<string, string> = {
-  // ── عسل النحل (صور مرفوعة من المستخدم) ──────────────────────────────
-  'عسل نحل طبيعي':        '/products/honey.jpeg',
-  'عسل نحل نوارة برسيم':  '/products/honey.jpeg',
-  'عسل نحل زهرة موالح':   '/products/%D8%B9%D8%B3%D9%84%20%D9%86%D8%AD%D9%84%20%D8%B2%D9%87%D8%B1%D9%87%20%D8%A7%D9%84%D9%85%D9%88%D8%A7%D9%84%D8%AD.jpg',
-  'عسل نحل حبة البركة':   '/products/%D8%B9%D8%B3%D9%84%20%D9%86%D8%AD%D9%84%20%D8%AD%D8%A8%D8%A9%20%D8%A7%D9%84%D8%A8%D8%B1%D9%83%D8%A9.jpg',
-  'عسل نحل سدر جبلي':     '/products/%D8%B9%D8%B3%D9%84%20%D9%86%D8%AD%D9%84%20%D8%B3%D8%AF%D8%B1%20%D8%AC%D8%A8%D9%84%D9%8A.jpg',
+  // ── عسل النحل ────────────────────────────────────────────────────────
+  'عسل نحل نوارة برسيم':  '/products/new-products-images/%D8%B9%D8%B3%D9%84%20%D9%86%D9%88%D8%A7%D8%B1%D9%87%20%D9%86%D8%AD%D9%84%20%D8%A7%D9%84%D8%A8%D8%B1%D8%B3%D9%8A%D9%85.jpeg',
+  'عسل نحل زهرة موالح':   '/products/new-products-images/%D8%B9%D8%B3%D9%84%20%D9%86%D8%AD%D9%84%20%D8%B2%D9%87%D8%B1%D9%87%20%D8%A7%D9%84%D9%85%D9%88%D8%A7%D9%84%D8%AD.jpg',
+  'عسل نحل حبة البركة':   '/products/new-products-images/%D8%B9%D8%B3%D9%84%20%D9%86%D8%AD%D9%84%20%D8%AD%D8%A8%D9%87%20%D8%A7%D9%84%D8%A8%D8%B1%D9%83%D9%87.jpg',
+  'عسل نحل سدر جبلي':     '/products/new-products-images/%D8%B9%D8%B3%D9%84%20%D9%86%D8%AD%D9%84%20%D8%B3%D8%AF%D8%B1%20%D8%AC%D8%A8%D9%84%D9%8A.jpg',
   'شمع عسل صافي':         '/products/%D8%B4%D9%85%D8%B9%20%D8%B9%D8%B3%D9%84%20%D8%B5%D8%A7%D9%81%D9%8A.webp',
-  'عسل أسود فاخر':        '/products/%D8%B9%D8%B3%D9%84%20%D8%A7%D8%B3%D9%88%D8%AF%20%D9%81%D8%A7%D8%AE%D8%B1.jpeg',
+  'عسل أسود فاخر':        '/products/new-products-images/%D8%B9%D8%B3%D9%84%20%D8%A7%D8%B3%D9%88%D8%AF%20%D9%85%D9%86%20%D9%82%D8%B5%D8%A8%20%D8%A7%D9%84%D8%B3%D9%83%D8%B1.jpeg',
 
-  // ── منتجات السمسم (صور مُنشأة) ──────────────────────────────────────
-  'طحينة سمسم صافي':      '/products/tahini.png',
+  // ── منتجات السمسم ────────────────────────────────────────────────────
+  'طحينة سمسم صافي':      '/products/new-products-images/%D8%B7%D8%AD%D9%8A%D9%86%D9%87%20%D8%B3%D9%85%D8%B3%D9%85.jpeg',
   'حلاوة بلدي سادة':      '/products/halawa.png',
   'حلاوة بلدي فستق':      '/products/halawa-pistachio.png',
 
-  // ── منتجات الألبان (صور مُنشأة) ─────────────────────────────────────
-  'زبد بقري طبيعي':       '/products/butter.png',
-  'زبد جاموسي طبيعي':     '/products/butter.png',
-  'سمن بقري بلدي':        '/products/ghee.png',
-  'سمن جاموسي بلدي':      '/products/ghee.png',
+  // ── منتجات الألبان ───────────────────────────────────────────────────
+  'زبد بقري طبيعي':       '/products/new-products-images/%D8%B2%D8%A8%D8%AF%20%D8%A8%D9%82%D8%B1%D9%8A.jpeg',
+  'زبد جاموسي طبيعي':     '/products/new-products-images/%D8%B2%D8%A8%D8%AF%20%D8%AC%D9%85%D9%88%D8%B3%D9%8A.jpeg',
+  'سمن بقري بلدي':        '/products/new-products-images/%D8%B3%D9%85%D9%86%20%D8%A8%D9%82%D8%B1%D9%8A%20%D8%A8%D9%84%D8%AF%D9%8A.jpeg',
+  'سمن جاموسي بلدي':      '/products/new-products-images/%D8%B3%D9%85%D9%86%20%D8%AC%D9%85%D9%88%D8%B3%D9%8A%20%D8%A8%D9%84%D8%AF%D9%8A.jpeg',
+  'عرض باكدج السمن':      '/products/new-products-images/%D8%B9%D8%B1%D8%B6.jpg',
 
-  // ── أساسيات البيت (صور مُنشأة + Unsplash موحدة) ─────────────────────
-  'ارز ابيض عريض الحبة':  '/products/rice.png',
-  'ارز ابيض رفيع الحبة':  '/products/rice.png',
-  'سكر نقي':              '/products/sugar.png',
+  // ── أساسيات البيت ────────────────────────────────────────────────────
+  'ارز ابيض عريض الحبة':  '/products/new-products-images/%D8%A7%D8%B1%D8%B2%20%D8%A7%D8%A8%D9%8A%D8%B6%20%D9%81%D8%A7%D8%AE%D8%B1.jpeg',
+  'ارز ابيض رفيع الحبة':  '/products/new-products-images/%D8%A7%D8%B1%D8%B2%20%D8%A7%D8%A8%D9%8A%D8%B6%20%D9%81%D8%A7%D8%AE%D8%B1.jpeg',
+  'سكر نقي':              '/products/new-products-images/%D8%B3%D9%83%D8%B1%20%D8%A7%D8%A8%D9%8A%D8%B6%20%D9%81%D8%A7%D8%AE%D8%B1.jpeg',
   'دقيق فاخر':            '/products/flour.png',
   'زيت زيتون بكر':        'https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?q=80&w=800&auto=format&fit=crop',
   'زيت نقي':              'https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?q=80&w=800&auto=format&fit=crop',
-  // صور محلية مرفوعة للبقوليات والمخلل
-  'عدس اصفر':             '/products/%D8%B9%D8%AF%D8%B3%20%D8%A7%D8%B5%D9%81%D8%B1.jpg',
+  'عدس اصفر':             '/products/new-products-images/%D8%B9%D8%AF%D8%B3%20%D8%A7%D8%B5%D9%81%D8%B1.jpg',
   'فول بلدي':             '/products/%D9%81%D9%88%D9%84%20%D8%A8%D9%84%D8%AF%D9%8A.jpg',
-  'عدس بجبة':             '/products/%D8%B9%D8%AF%D8%B3%20%D8%A8%D8%AC%D8%A8%D9%87.jpg',
-  'لوبيا بلدي':           '/products/%D9%84%D9%88%D8%A8%D9%8A%D8%A7%20%D8%A8%D9%84%D8%AF%D9%8A.jpg',
-  'فاصوليا بيضاء':        '/products/%D9%81%D8%A7%D8%B5%D9%88%D9%84%D9%8A%D8%A7%20%D8%A8%D9%8A%D8%B6%D8%A7%D8%A1.jpg',
+  'عدس بجبة':             '/products/new-products-images/%D8%B9%D8%AF%D8%B3%20%D8%A8%D8%AC%D8%A8%D9%87.jpeg',
+  'لوبيا بلدي':           '/products/new-products-images/%D9%84%D9%88%D8%A8%D9%8A%D8%A7.jpg',
+  'فاصوليا بيضاء':        '/products/%D9%81%D8%A7%D8%B5%D9%88%D9%84%D9%8A%D8%A7-2.jpg',
   'مخلل خيار بلدي':       '/products/%D9%85%D8%AE%D9%84%D9%84%20%D8%AE%D9%8A%D8%A7%D8%B1%20%D8%A8%D9%84%D8%AF%D9%8A.jpg',
 
-  // ── المربيات (صور محلية مرفوعة) ───────────────────────────────────────
+  // ── المربيات ──────────────────────────────────────────────────────────
   'مربى فراولة قطع':      '/products/%D9%85%D8%B1%D8%A8%D9%89%20%D9%81%D8%B1%D8%A7%D9%88%D9%84%D8%A9%20%D9%82%D8%B7%D8%B9.jpg',
   'مربى تين سبيريد':      '/products/%D9%85%D8%B1%D8%A8%D9%89%20%D8%AA%D9%8A%D9%86%20%D8%B3%D8%A8%D9%8A%D8%B1%D9%8A%D8%AF.jpg',
   'مربى جزر بلدي':        '/products/%D9%85%D8%B1%D8%A8%D9%89%20%D8%AC%D8%B2%D8%B1%20%D8%A8%D9%84%D8%AF%D9%8A.jpg',
-  'مربى بلح فاخر':        '/products/%D9%85%D8%B1%D8%A8%D9%89%20%D8%A8%D9%84%D8%AD%20%D9%81%D8%A7%D8%AE%D8%B1.jpg',
+  'مربى بلح فاخر':        '/products/new-products-images/%D9%85%D8%B1%D8%A8%D9%8A%20%D8%A8%D9%84%D8%AD.jpg',
 };
 
 const groupRows = (
@@ -67,7 +66,7 @@ const groupRows = (
       current.variants.push(variant);
     } else {
       grouped.set(name, {
-        id: `${prefix}-${grouped.size}`,
+        id: `${prefix}-${index}`,
         name,
         category,
         variants: [variant],
@@ -85,15 +84,27 @@ const pantry = groupRows([
 ] as CatalogRow[], 'أساسيات البيت', 'pantry');
 
 const honey = groupRows([
-  ['عسل نحل طبيعي', '٥٠٠ جرام', 150], ['عسل نحل نوارة برسيم', '١ كجم', 145],
-  ['عسل نحل زهرة موالح', '٥٠٠ جرام', 100], ['عسل نحل زهرة موالح', '١ كجم', 190],
-  ['عسل نحل حبة البركة', '٥٠٠ جرام', 95], ['عسل نحل سدر جبلي', '١ كجم', 380],
-  ['شمع عسل صافي', '٥٠٠ جرام', 125], ['عسل أسود فاخر', '١ كجم', 65],
+  ['عسل نحل نوارة برسيم', '٥٠٠ جرام', 85],
+  ['عسل نحل نوارة برسيم', '١ كجم', 145],
+  ['عسل نحل زهرة موالح', '٥٠٠ جرام', 100],
+  ['عسل نحل زهرة موالح', '١ كجم', 190],
+  ['عسل نحل حبة البركة', '٥٠٠ جرام', 95],
+  ['عسل نحل حبة البركة', '١ كجم', 175],
+  ['عسل نحل سدر جبلي', '٥٠٠ جرام', 200],
+  ['عسل نحل سدر جبلي', '١ كجم', 380],
+  ['شمع عسل صافي', '٥٠٠ جرام', 125],
+  ['شمع عسل صافي', '١ كجم', 230],
+  ['عسل أسود فاخر', '٥٠٠ جرام', 35],
+  ['عسل أسود فاخر', '١ كجم', 65],
 ] as CatalogRow[], 'عسل النحل', 'honey', (name) => name.startsWith('عسل نحل') || name === 'شمع عسل');
 
 const dairy = groupRows([
-  ['زبد بقري طبيعي', '١ كجم', 320], ['زبد جاموسي طبيعي', '١ كجم', 340],
-  ['سمن بقري بلدي', '١ كجم', 380], ['سمن جاموسي بلدي', '١ كجم', 410],
+  ['زبد بقري طبيعي', '١ كجم', 320],
+  ['زبد جاموسي طبيعي', '١ كجم', 340],
+  ['سمن بقري بلدي', '٥٠٠ جرام', 200],
+  ['سمن بقري بلدي', '١ كجم', 380],
+  ['سمن جاموسي بلدي', '٥٠٠ جرام', 215],
+  ['سمن جاموسي بلدي', '١ كجم', 410],
 ] as CatalogRow[], 'منتجات الألبان', 'dairy');
 
 const sesame = groupRows([
@@ -108,7 +119,7 @@ const jams = groupRows([
 export const productData: Product[] = [...honey, ...sesame, ...dairy, ...pantry, ...jams].map((product) => ({
   ...product,
   accent: product.category === 'عسل النحل' ? 'honey' : product.category === 'أساسيات البيت' ? 'grain' : product.category === 'منتجات الألبان' ? 'dairy' : product.category === 'منتجات السمسم' ? 'sesame' : 'jam',
-  imageUrl: PRODUCT_IMAGES[product.name] || PRODUCT_IMAGES['عسل نحل طبيعي'],
+  imageUrl: PRODUCT_IMAGES[product.name] || PRODUCT_IMAGES['عسل نحل نوارة برسيم'],
   icon: product.category === 'عسل النحل' ? Droplets : product.category === 'أساسيات البيت' ? Wheat : product.category === 'منتجات الألبان' ? PackageCheck : product.category === 'منتجات السمسم' ? CircleHelp : Heart,
 }));
 

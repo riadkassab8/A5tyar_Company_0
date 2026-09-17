@@ -2,12 +2,18 @@
   "name": "workspace",
   "version": "0.0.0",
   "license": "MIT",
+  "workspaces": [
+    "artifacts/*",
+    "lib/*",
+    "lib/integrations/*",
+    "scripts"
+  ],
   "scripts": {
-    "dev": "pnpm --filter @workspace/kheirha-store dev",
-    "dev:api": "pnpm --filter @workspace/api-server dev",
-    "build": "pnpm run typecheck && pnpm -r --if-present run build",
+    "dev": "npm run dev --workspace=@workspace/kheirha-store",
+    "dev:api": "npm run dev --workspace=@workspace/api-server",
+    "build": "npm run typecheck && npm run build --workspaces --if-present",
     "typecheck:libs": "tsc --build",
-    "typecheck": "pnpm run typecheck:libs && pnpm -r --filter \"./artifacts/**\" --filter \"./scripts\" --if-present run typecheck"
+    "typecheck": "npm run typecheck:libs && npm run typecheck --workspaces --if-present"
   },
   "private": true,
   "dependencies": {
@@ -19,3 +25,4 @@
     "esbuild": "^0.28.2"
   }
 }
+
